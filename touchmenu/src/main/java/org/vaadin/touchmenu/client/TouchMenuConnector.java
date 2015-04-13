@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractHasComponentsConnector;
 import com.vaadin.client.ui.SimpleManagedLayout;
@@ -41,9 +42,12 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
 
         getWidget().rows = getState().rows;
         getWidget().columns = getState().columns;
-        getWidget().layoutWidgets();
     }
 
+    @OnStateChange("arrowNavigationEnabled")
+    void setArrowNavigation() {
+        getWidget().setUseArrows(getState().arrowNavigationEnabled);
+    }
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {

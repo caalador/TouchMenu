@@ -1,7 +1,11 @@
-div.touchmenu {
+div.c-touchmenu {
 	cursor: pointer;
 	user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
+}
+
+.c-touchmenu {
+	background-color: floralwhite;
 }

@@ -2,12 +2,12 @@ package org.vaadin.touchmenu;
 
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
-import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbstractComponent;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonRpc;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonState;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mikael Grankvist - Vaadin }>
@@ -28,6 +28,9 @@ public class TouchMenuButton extends AbstractComponent {
 
     public TouchMenuButton(String caption) {
         super();
+
+        setId(UUID.randomUUID().toString());
+
         registerRpc(rpc);
         setCaption(caption);
         setWidth(50, Unit.PIXELS);
