@@ -1,6 +1,7 @@
 package org.vaadin.touchmenu.client;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -19,8 +20,13 @@ import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.VConsole;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonWidget;
 
@@ -47,6 +53,8 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     private boolean useArrows = true;
 
+    private int endValue = 0;
+
     public TouchMenuWidget() {
         super();
         getElement().getStyle().setPosition(Style.Position.RELATIVE);
@@ -58,6 +66,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         addDomHandler(this, MouseMoveEvent.getType());
         addDomHandler(this, MouseUpEvent.getType());
         addDomHandler(this, MouseOutEvent.getType());
+        addDomHandler(this, ClickEvent.getType());
         if (TouchEvent.isSupported()) {
             // Add touch event handlers
             addDomHandler(this, TouchStartEvent.getType());
@@ -148,17 +157,34 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     public boolean move = false;
     public int xDown = 0;
-    public boolean dragged = false;
+    public TouchMenuButtonWidget mouseDownButton;
 
     @Override
     public void onMouseDown(MouseDownEvent mouseDownEvent) {
         Element relativeElement = mouseDownEvent.getRelativeElement();
         if (!relativeElement.equals(navigateLeft) && !relativeElement.equals(navigateRight)) {
+            checkForButtonWidget(mouseDownEvent.getNativeEvent());
+
             removeStyleVersions(touchArea.getElement().getStyle(), "transition");
             removeStyleVersions(touchArea.getElement().getStyle(), "transitionProperty");
             mouseDownEvent.preventDefault();
             move = true;
             xDown = mouseDownEvent.getClientX();
+        }
+    }
+
+    private void checkForButtonWidget(NativeEvent nativeEvent) {
+        Element element = DOM.eventGetTarget(Event.as(nativeEvent));
+        IsWidget widget = null;
+
+        if (element.getClassName().contains(TouchMenuButtonWidget.CLASSNAME)) {
+            widget = getWidget(element);
+        } else if (element.getParentElement().getClassName().contains(TouchMenuButtonWidget.CLASSNAME)) {
+            widget = getWidget(element.getParentElement());
+        }
+
+        if (widget != null) {
+            mouseDownButton = (TouchMenuButtonWidget) widget.asWidget();
         }
     }
 
@@ -170,7 +196,9 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             xDown = mouseMoveEvent.getClientX();
 
             touchArea.getElement().getStyle().setLeft(current, Style.Unit.PX);
-            dragged = true;
+            if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {
+                mouseDownButton.ignoreClick(true);
+            }
         }
     }
 
@@ -188,20 +216,26 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     @Override
     public void onClick(ClickEvent event) {
-        if (event.getRelativeElement().hasClassName(TouchMenuButtonWidget.CLASSNAME) && dragged) {
+        if (mouseDownButton != null) {
             event.stopPropagation();
-            event.preventDefault();
+            mouseDownButton.ignoreClick(false);
+            mouseDownButton = null;
         }
-        dragged = false;
     }
 
     private void moveEnd() {
         if (touchArea.getElement().getOffsetLeft() > 0) {
-            addStyleVersions(touchArea.getElement().getStyle(), "transition", "all 1s ease");
-            addStyleVersions(touchArea.getElement().getStyle(), "transitionProperty", "left");
+            setTransitionToArea();
             touchArea.getElement().getStyle().setLeft(0, Style.Unit.PX);
-//        } else if ()
+        } else if (touchArea.getElement().getOffsetLeft() < -(endValue - touchView.getOffsetWidth())) {
+            setTransitionToArea();
+            touchArea.getElement().getStyle().setLeft(-(endValue - touchView.getOffsetWidth()), Style.Unit.PX);
         }
+    }
+
+    private void setTransitionToArea() {
+        addStyleVersions(touchArea.getElement().getStyle(), "transition", "all 1s ease");
+        addStyleVersions(touchArea.getElement().getStyle(), "transitionProperty", "left");
     }
 
     @Override
@@ -221,13 +255,12 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     public void clear() {
         widgets.clear();
-        touchArea.clear();//removeAllChildren();
+        touchArea.clear();
     }
 
     public void add(TouchMenuButtonWidget widget) {
         widgets.add(widget);
         widget.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
-//        touchArea.appendChild(widget.getElement());
         touchArea.add(widget);
     }
 
@@ -254,12 +287,14 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         }
     }
 
+    private int step;
+
     public void layoutWidgets() {
         int touchViewWidth = useArrows ? getElement().getClientWidth() - 80 : getElement().getClientWidth();
         int touchViewHeight = getElement().getClientHeight();
         touchView.getElement().getStyle().setWidth(touchViewWidth, Style.Unit.PX);
 
-        if(widgets.isEmpty()) {
+        if (widgets.isEmpty()) {
             return;
         }
 
@@ -269,7 +304,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         int columnMargin = (int) Math.ceil((touchViewWidth / columns - itemWidth) / 2);
         int rowMargin = (int) Math.ceil((touchViewHeight / rows - itemHeight) / 2);
 
-        int step = 2 * columnMargin + itemWidth;
+        step = 2 * columnMargin + itemWidth;
 
         int left = columnMargin;
         int item = 0;
@@ -307,6 +342,8 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
             item++;
         }
+
+        endValue = left + step - columnMargin;
     }
 
     /**
@@ -350,5 +387,26 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
         style.clearProperty("Moz" + baseProperty);
         style.clearProperty("Webkit" + baseProperty);
+    }
+
+    /**
+     * Get widget for element through it's associated eventListener.
+     *
+     * @param element Element to get widget for.
+     * @return Widget if found else null.
+     */
+    public static IsWidget getWidget(Element element) {
+        EventListener listener = DOM.getEventListener(element);
+
+        // No listener attached to the element, so no widget exist for this
+        // element
+        if (listener == null) {
+            return null;
+        }
+        if (listener instanceof Widget) {
+            // GWT uses the widget as event listener
+            return (Widget) listener;
+        }
+        return null;
     }
 }

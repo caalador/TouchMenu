@@ -15,6 +15,7 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
     public static final String CLASSNAME = "touch-menu-button";
 
     private MenuClickListener listener;
+    private boolean ignoreClick = false;
 
     public TouchMenuButtonWidget() {
 
@@ -26,7 +27,7 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
         getElement().getStyle().setBackgroundColor("ORANGE");
     }
 
-    public void setListener(MenuClickListener listener) {
+    protected void setListener(MenuClickListener listener) {
         this.listener = listener;
     }
 
@@ -37,14 +38,25 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
 
     @Override
     public void onClick(ClickEvent clickEvent) {
-        VConsole.log("Clicked button");
+        if (ignoreClick) {
+            return;
+        }
+
         clickEvent.stopPropagation();
-        if(listener != null){
+        if (listener != null) {
             listener.buttonClicked();
         }
     }
 
-    public interface MenuClickListener {
+    protected interface MenuClickListener {
         void buttonClicked();
+    }
+
+    public void ignoreClick(boolean ignoreClick) {
+        this.ignoreClick = ignoreClick;
+    }
+
+    public boolean isIgnoreClick() {
+        return ignoreClick;
     }
 }
