@@ -50,6 +50,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     protected int columns, rows;
 
     protected int firstVisibleColumn = 0;
+    protected Direction buttonDirection = Direction.IN_FROM_SAME;
 
     private boolean useArrows = true;
 
@@ -75,9 +76,36 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         }
 
 
-        navigateLeft = new Button();//Document.get().createButtonElement();
-        navigateRight = new Button();// Document.get().createButtonElement();
-
+        navigateLeft = new Button();
+        navigateRight = new Button();
+        navigateLeft.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                switch (buttonDirection) {
+                    case IN_FROM_OPPOSITE:
+                        firstVisibleColumn++;
+                        break;
+                    case IN_FROM_SAME:
+                        firstVisibleColumn--;
+                        break;
+                }
+                transitionToColumn();
+            }
+        });
+        navigateRight.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                switch (buttonDirection) {
+                    case IN_FROM_OPPOSITE:
+                        firstVisibleColumn--;
+                        break;
+                    case IN_FROM_SAME:
+                        firstVisibleColumn++;
+                        break;
+                }
+                transitionToColumn();
+            }
+        });
         navigateLeft.getElement().setClassName("left-navigation");
         navigateRight.getElement().setClassName("right-navigation");
 
@@ -86,7 +114,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         navigateRight.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         navigateRight.getElement().getStyle().setWidth(40, Style.Unit.PX);
 
-        setTransparent(navigateLeft.getElement());
+        transparentFirst();
 
         touchArea = new AbsolutePanel();
         touchArea.setHeight("100%");
@@ -156,6 +184,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
      */
 
     public boolean move = false;
+    private boolean dragged = false;
     public int xDown = 0;
     public TouchMenuButtonWidget mouseDownButton;
 
@@ -199,19 +228,22 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {
                 mouseDownButton.ignoreClick(true);
             }
+            dragged = true;
         }
     }
 
     @Override
     public void onMouseUp(MouseUpEvent mouseUpEvent) {
         move = false;
-        moveEnd();
+        if (dragged)
+            moveEnd();
     }
 
     @Override
     public void onMouseOut(MouseOutEvent event) {
         move = false;
-        moveEnd();
+        if (dragged)
+            moveEnd();
     }
 
     @Override
@@ -224,12 +256,81 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     }
 
     private void moveEnd() {
+        dragged = false;
+
         if (touchArea.getElement().getOffsetLeft() > 0) {
-            setTransitionToArea();
-            touchArea.getElement().getStyle().setLeft(0, Style.Unit.PX);
+            firstVisibleColumn = 0;
+            transitionToColumn();
         } else if (touchArea.getElement().getOffsetLeft() < -(endValue - touchView.getOffsetWidth())) {
-            setTransitionToArea();
-            touchArea.getElement().getStyle().setLeft(-(endValue - touchView.getOffsetWidth()), Style.Unit.PX);
+            firstVisibleColumn = (endValue - touchView.getOffsetWidth()) / step;
+            transitionToColumn();
+        } else {
+            int firstVisible = Math.abs(touchView.getWidgetLeft(touchArea) / step);
+
+            // scroll forward column if over start margin
+            int margin = column - step;
+            if (Math.abs(touchView.getWidgetLeft(touchArea) % step) > margin) {
+                firstVisible++;
+            }
+
+            VConsole.log(" === " + firstVisible + " : " + touchView.getWidgetLeft(touchArea) + " : " + step);
+            firstVisibleColumn = firstVisible;
+
+            transitionToColumn();
+
+        }
+    }
+
+    private void transitionToColumn() {
+        int maxValue = (endValue - touchView.getOffsetWidth()) / step;
+        VConsole.log(" === maxValue " + maxValue);
+        VConsole.log(" === firstVisible " + firstVisibleColumn);
+        int minValue = 0;
+        if (firstVisibleColumn < minValue) {
+            firstVisibleColumn = 0;
+        } else if (firstVisibleColumn > maxValue) {
+            firstVisibleColumn = maxValue;
+        }
+
+        setTransitionToArea();
+
+        int value = firstVisibleColumn * step;
+
+        if (value > (endValue - touchView.getOffsetWidth())) {
+            value = (endValue - touchView.getOffsetWidth());
+        }
+        VConsole.log(" === setting value " + value);
+        touchArea.getElement().getStyle().setLeft(-value, Style.Unit.PX);
+
+        navigateLeft.setEnabled(true);
+        navigateRight.setEnabled(true);
+
+        if (firstVisibleColumn == 0) {
+            transparentFirst();
+        } else if (firstVisibleColumn == maxValue) {
+            transparentLast();
+        }
+    }
+
+    private void transparentFirst() {
+        switch (buttonDirection) {
+            case IN_FROM_OPPOSITE:
+                navigateRight.setEnabled(false);
+                break;
+            case IN_FROM_SAME:
+                navigateLeft.setEnabled(false);
+                break;
+        }
+    }
+
+    private void transparentLast() {
+        switch (buttonDirection) {
+            case IN_FROM_OPPOSITE:
+                navigateLeft.setEnabled(false);
+                break;
+            case IN_FROM_SAME:
+                navigateRight.setEnabled(false);
+                break;
         }
     }
 
@@ -287,7 +388,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         }
     }
 
-    private int step;
+    private int step, column;
 
     public void layoutWidgets() {
         int touchViewWidth = useArrows ? getElement().getClientWidth() - 80 : getElement().getClientWidth();
@@ -307,6 +408,8 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         step = 2 * columnMargin + itemWidth;
 
         int left = columnMargin;
+        column = step + columnMargin;
+
         int item = 0;
 
         // Position buttons into touchArea.
@@ -345,25 +448,6 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
         endValue = left + step - columnMargin;
     }
-
-    /**
-     * Make element transparent
-     */
-    private void setTransparent(final Element target) {
-        final Style targetStyle = target.getStyle();
-        targetStyle.setProperty("opacity", "0.3");
-        targetStyle.setProperty("filter", "alpha(opacity=30)");
-    }
-
-    /**
-     * Make element opaque
-     */
-    private void removeTransparent(final Element target) {
-        final Style targetStyle = target.getStyle();
-        targetStyle.setProperty("opacity", "1");
-        targetStyle.setProperty("filter", "alpha(opacity=100)");
-    }
-
 
     private void addStyleVersions(Style style, String baseProperty, String value) {
         style.setProperty(baseProperty, value);
@@ -408,5 +492,16 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             return (Widget) listener;
         }
         return null;
+    }
+
+    public void setDirection(Direction direction) {
+        buttonDirection = direction;
+        int maxValue = (endValue - touchView.getOffsetWidth()) / step;
+
+        if (firstVisibleColumn == 0) {
+            transparentFirst();
+        } else if (firstVisibleColumn == maxValue) {
+            transparentLast();
+        }
     }
 }

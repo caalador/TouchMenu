@@ -9,3 +9,10 @@ div.c-touchmenu {
 .c-touchmenu {
 	background-color: floralwhite;
 }
+
+.c-touchmenu .touch-menu-button img.v-icon {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+}
