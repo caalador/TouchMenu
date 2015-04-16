@@ -61,6 +61,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     private int xDown = 0;
     private int start = 0;
     private int end = 0;
+    private int maxValue = 0;
 
     public TouchMenuButtonWidget mouseDownButton;
 
@@ -293,9 +294,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     }
 
     private void transitionToColumn() {
-        int maxValue = (endValue - touchView.getOffsetWidth()) / step;
-        int minValue = 0;
-        if (firstVisibleColumn < minValue) {
+        if (firstVisibleColumn < 0) {
             firstVisibleColumn = 0;
         } else if (firstVisibleColumn > maxValue) {
             firstVisibleColumn = maxValue;
@@ -421,12 +420,14 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         column = step + columnMargin;
 
         int item = 0;
+        maxValue = 0;
 
         // Position buttons into touchArea.
         // No extra positioning needed as we move touchArea instead of the buttons.
         for (TouchMenuButtonWidget button : widgets) {
             if (item > 0 && item % rows == 0) {
                 left += step;
+                maxValue++;
             }
             int buttonLeft = left;
             int buttonTop = rowMargin + ((item % rows) * (2 * rowMargin + itemHeight));
@@ -457,6 +458,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         }
 
         endValue = left + step - columnMargin;
+        maxValue -= columns-1;
     }
 
     private void addStyleVersions(Style style, String baseProperty, String value) {

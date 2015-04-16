@@ -1,24 +1,47 @@
 div.c-touchmenu {
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .c-touchmenu {
-	background-color: floralwhite;
+    background-color: floralwhite;
 }
 
 .c-touchmenu .touch-menu-button {
-	text-align: center;
-	cursor: pointer;
-	border: 1px solid lightgray;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid lightgray;
 }
+
 .c-touchmenu .touch-menu-button-caption {
-	font-size: 12px;
-	width: 100%;
-	white-space: normal;
+    font-size: 12px;
+    width: 100%;
+    white-space: normal;
 }
+
 .c-touchmenu .touch-menu-button img.v-icon {
-	vertical-align: middle;
+    vertical-align: middle;
+}
+
+.c-touchmenu button.left-navigation,
+.c-touchmenu button.right-navigation {
+    background-color: linen;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+}
+
+.c-touchmenu button.left-navigation:disabled,
+.c-touchmenu button.right-navigation:disabled {
+    opacity: 0.3;
+}
+
+.c-touchmenu button.left-navigation {
+    background-image: url(image/left-arrow.png);
+}
+
+.c-touchmenu button.right-navigation {
+    background-image: url(image/right-arrow.png);
 }
