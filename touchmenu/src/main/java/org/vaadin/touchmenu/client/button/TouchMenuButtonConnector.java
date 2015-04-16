@@ -43,20 +43,16 @@ public class TouchMenuButtonConnector extends AbstractComponentConnector {
         return (TouchMenuButtonState) super.getState();
     }
 
-
+    @OnStateChange("caption")
+    void setCaption() {
+        getWidget().setCaption(getState().caption);
+    }
 
     @OnStateChange("resources")
     void onResourceChange() {
-//        if (getWidget().icon != null) {
-//            getWidget().wrapper.removeChild(getWidget().icon.getElement());
-//            getWidget().icon = null;
-//        }
         Icon icon = getIcon();
         if (icon != null) {
             getWidget().setIcon(icon);
-//            icon.setAlternateText(getState().iconAltText);
-//            getWidget().wrapper.insertBefore(icon.getElement(),
-//                    getWidget().captionElement);
         }
     }
 }

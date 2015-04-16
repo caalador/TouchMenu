@@ -29,12 +29,13 @@ public class DemoUI extends UI {
     protected void init(VaadinRequest request) {
 
         // Initialize our new UI component
-        final TouchMenu component = new TouchMenu(3, 2);
+        final TouchMenu component = new TouchMenu(2, 2);
 
         component.addComponent(getButton());
         component.addComponent(getButton());
         TouchMenuButton button = getButton();
         button.setWidth(75, Unit.PIXELS);
+        button.setStyleName("hundred");
         component.addComponent(button);
         component.addComponent(getButton());
         component.addComponent(getButton());
@@ -42,13 +43,15 @@ public class DemoUI extends UI {
         button = getButton();
         button.setHeight(75, Unit.PIXELS);
         button.setWidth(75, Unit.PIXELS);
+        button.setIcon(new ThemeResource("capsule-48x48.png"));
+        button.addStyleName("hundred");
         component.addComponent(button);
         component.addComponent(getButton());
         component.addComponent(getButton());
         component.addComponent(getButton());
         component.addComponent(getButton());
         component.addComponent(getButton());
-        component.addComponent(getButton());
+//        component.addComponent(getButton());
         component.addComponent(getButton());
 
         // Show it in the middle of the screen
@@ -64,7 +67,7 @@ public class DemoUI extends UI {
     private TouchMenuButton getButton() {
         TouchMenuButton button = new TouchMenuButton("Button");
 
-        button.setIcon(new ThemeResource("capsule-48x48.png"));
+        button.setIcon(new ThemeResource("capsule-30x30.png"));
         button.addButtonClickedListener(new TouchMenuButton.ButtonListener() {
             @Override
             public void buttonClicked(TouchMenuButton button) {

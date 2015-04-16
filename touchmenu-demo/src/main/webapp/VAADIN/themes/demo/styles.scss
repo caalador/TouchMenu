@@ -7,30 +7,40 @@ $darkgreen: darken($green, 30%);
 // Prefix all selectors in your theme with .demo
 .demo {
 
-	// Include valo theme styles in your theme
-	@include valo;
+  // Include valo theme styles in your theme
+  @include valo;
 
-	// You can style your demo app right here
-	.demoContentLayout {
-		background-color: $gray;
-		background-image: url(images/radial-gradient.png);
-		background-size: 90%;
-		background-position: center center;
-		background-repeat: no-repeat;
-	}
-	
-	// You can also customize your component for the demo
-	// app, but remember that these styles are not part of
-	// the component. To include built-in CSS for your component,
-	// edit client/styles.css under java sources
-	div.touchmenu {
-		color: $green;
-		font-size: 50pt;
-		font-weight: bold;
-		text-shadow: 0px 3px 0px $darkgreen,
-             0px 14px 10px rgba(0,0,0,0.15),
-             0px 24px 2px rgba(0,0,0,0.1),
-             0px 34px 30px rgba(0,0,0,0.1);
-        text-align: center;
-	}
+  // You can style your demo app right here
+  .demoContentLayout {
+    background-color: $gray;
+    background-image: url(images/radial-gradient.png);
+    background-size: 90%;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  // You can also customize your component for the demo
+  // app, but remember that these styles are not part of
+  // the component. To include built-in CSS for your component,
+  // edit client/styles.css under java sources
+  div.touchmenu {
+    color: $green;
+    font-size: 50pt;
+    font-weight: bold;
+    text-shadow: 0px 3px 0px $darkgreen,
+    0px 14px 10px rgba(0, 0, 0, 0.15),
+    0px 24px 2px rgba(0, 0, 0, 0.1),
+    0px 34px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .touch-menu-button {
+    color: whitesmoke;
+    background-image: url(TouchButton-50x50.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    &.hundred {
+      background-image: url(TouchButton-100x100.png);
+    }
+  }
 }

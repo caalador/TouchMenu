@@ -193,6 +193,9 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     @Override
     public void onMouseDown(MouseDownEvent mouseDownEvent) {
+        if(mouseDownEvent.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
+            return;
+        }
         Element relativeElement = mouseDownEvent.getRelativeElement();
         if (!relativeElement.equals(navigateLeft) && !relativeElement.equals(navigateRight)) {
             checkForButtonWidget(mouseDownEvent.getNativeEvent());

@@ -1,11 +1,14 @@
 package org.vaadin.touchmenu.client.button;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.VConsole;
 import com.vaadin.client.ui.Icon;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mikael Grankvist - Vaadin }>
@@ -16,15 +19,21 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
 
     private MenuClickListener listener;
     private boolean ignoreClick = false;
+    private String caption = "";
+    private Element captionLabel;
 
     public TouchMenuButtonWidget() {
 
         setElement(Document.get().createDivElement());
         getElement().addClassName(CLASSNAME);
 
-        addDomHandler(this, ClickEvent.getType());
+        captionLabel = Document.get().createDivElement();
+        captionLabel.setClassName(CLASSNAME + "-caption");
+        captionLabel.setInnerText(caption);
 
-        getElement().getStyle().setBackgroundColor("ORANGE");
+        getElement().appendChild(captionLabel);
+
+        addDomHandler(this, ClickEvent.getType());
     }
 
     protected void setListener(MenuClickListener listener) {
@@ -33,6 +42,7 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
 
     public void setIcon(Icon icon) {
         getElement().removeAllChildren();
+        getElement().appendChild(captionLabel);
         getElement().appendChild(icon.getElement());
     }
 
@@ -46,6 +56,11 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
         if (listener != null) {
             listener.buttonClicked();
         }
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+        captionLabel.setInnerText(caption);
     }
 
     protected interface MenuClickListener {
