@@ -35,6 +35,7 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
      */
     public void setRows(int rows) {
         getState().rows = rows;
+        markAsDirty();
     }
 
     public int getColumns() {
@@ -46,6 +47,7 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
      */
     public void setColumns(int columns) {
         getState().columns = columns;
+        markAsDirty();
     }
 
     public Direction getDirection() {

@@ -38,8 +38,8 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
 
     @OnStateChange({"rows", "columns"})
     void updateRowsAndColumns() {
-        getWidget().rows = getState().rows;
-        getWidget().columns = getState().columns;
+        getWidget().setRows(getState().rows);
+        getWidget().setColumns(getState().columns);
     }
 
     @OnStateChange("arrowNavigationEnabled")
@@ -50,6 +50,11 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
     @OnStateChange("direction")
     void setArrowNavigationDirection() {
         getWidget().setDirection(getState().direction);
+    }
+
+    @OnStateChange("animate")
+    void setAnimationEnabled() {
+        getWidget().animate = getState().animate;
     }
 
     @Override

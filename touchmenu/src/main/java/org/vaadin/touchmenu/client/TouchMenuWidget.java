@@ -55,6 +55,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     private boolean useArrows = true;
     private boolean move = false;
     private boolean dragged = false;
+    protected boolean animate;
 
     private int endValue = 0;
     private int xDown = 0;
@@ -167,6 +168,8 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             navigateLeft.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
             navigateRight.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
         }
+        layoutWidgets();
+        transitionToColumn();
     }
 
     public int getColumns() {
@@ -176,6 +179,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     public void setColumns(int columns) {
         this.columns = columns;
         layoutWidgets();
+        transitionToColumn();
     }
 
     public int getRows() {
@@ -185,6 +189,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     public void setRows(int rows) {
         this.rows = rows;
         layoutWidgets();
+        transitionToColumn();
     }
 
     /**
@@ -338,8 +343,10 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     }
 
     private void setTransitionToArea() {
-        addStyleVersions(touchArea.getElement().getStyle(), "transition", "all 1s ease");
-        addStyleVersions(touchArea.getElement().getStyle(), "transitionProperty", "left");
+        if(animate) {
+            addStyleVersions(touchArea.getElement().getStyle(), "transition", "all 1s ease");
+            addStyleVersions(touchArea.getElement().getStyle(), "transitionProperty", "left");
+        }
     }
 
     @Override
@@ -502,6 +509,9 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     public void setDirection(Direction direction) {
         buttonDirection = direction;
         int maxValue = (endValue - touchView.getOffsetWidth()) / step;
+
+        navigateLeft.setEnabled(true);
+        navigateRight.setEnabled(true);
 
         if (firstVisibleColumn == 0) {
             transparentFirst();
