@@ -9,10 +9,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -31,6 +28,7 @@ public class DemoUI extends UI {
 
     private TextField width, height, rows, columns;
     private CheckBox animate, from, useArrows;
+    int next = 0;
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.demo.DemoWidgetSet")
@@ -39,7 +37,8 @@ public class DemoUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        final TouchMenu component = new TouchMenu(2, 2);
+        final TouchMenu component = new TouchMenu(2, 3);
+        component.setButtonSize(50, 50);
 
         String sizeW = "500px";
         String sizeH = "300px";
@@ -112,37 +111,45 @@ public class DemoUI extends UI {
                 component.setArrowNavigationEnabled(useArrows.getValue());
             }
         });
-        HorizontalLayout hl = new HorizontalLayout(width,height,rows,columns);
+        HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
         hl.setSpacing(true);
 
         // Check boxes + button size drop down
-        HorizontalLayout hl2 = new HorizontalLayout(animate,from,useArrows);
+        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows);
 //        hl2.addComponent(sizes);
         hl2.setSpacing(true);
 
         // Initialize our new UI component
+        TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
+        button.setCaption("Cake");
+        button.setWidth(100, Unit.PIXELS);
+        button.setHeight(100, Unit.PIXELS);
+        component.addComponent(button);
+
+        button = getButton();
+        button.setIcon(null);
+        component.addComponent(button);
+
+        button = getButton("capsule-48x48", "hundred", "position");
+        button.setCaption("Capsule button");
+        button.setHeight(100, Unit.PIXELS);
+        button.setWidth(100, Unit.PIXELS);
+        component.addComponent(button);
 
         component.addComponent(getButton());
         component.addComponent(getButton());
-        TouchMenuButton button = getButton();
+        component.addComponent(getButton());
+        component.addComponent(getButton());
+        component.addComponent(getButton());
+        component.addComponent(getButton());
+        component.addComponent(getButton());
+
+        button = getButton();
         button.setWidth(75, Unit.PIXELS);
         button.setStyleName("hundred");
         component.addComponent(button);
+
         component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        button = getButton();
-        button.setHeight(75, Unit.PIXELS);
-        button.setWidth(75, Unit.PIXELS);
-        button.setIcon(new ThemeResource("capsule-48x48.png"));
-        button.addStyleName("hundred");
-        component.addComponent(button);
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-//        component.addComponent(getButton());
         component.addComponent(getButton());
 
         // Show it in the middle of the screen
@@ -156,10 +163,18 @@ public class DemoUI extends UI {
 
     }
 
-    private TouchMenuButton getButton() {
-        TouchMenuButton button = new TouchMenuButton("Button");
+    private TouchMenuButton getButton(String icon, String... styles) {
+        TouchMenuButton button = getButton(icon);
+        for(String style: styles) {
+            button.addStyleName(style);
+        }
+        return button;
+    }
 
-        button.setIcon(new ThemeResource("capsule-30x30.png"));
+    private TouchMenuButton getButton(String icon) {
+        TouchMenuButton button = new TouchMenuButton(captions[next % captions.length], new ThemeResource("images/" + icon + ".png"));
+        next++;
+
         button.addButtonClickedListener(new TouchMenuButton.ButtonListener() {
             @Override
             public void buttonClicked(TouchMenuButton button) {
@@ -169,4 +184,21 @@ public class DemoUI extends UI {
         return button;
     }
 
+    private TouchMenuButton getButton() {
+        TouchMenuButton button = new TouchMenuButton(captions[next % captions.length]);
+        next++;
+
+        button.addButtonClickedListener(new TouchMenuButton.ButtonListener() {
+            @Override
+            public void buttonClicked(TouchMenuButton button) {
+                Notification.show("Button clicked! " + button.getId());
+            }
+        });
+        return button;
+    }
+
+
+    String[] captions = new String[]{
+            "Cake", "Capsule button", "Coffee", "Sugar", "Honey", "Rain", "Movies"
+    };
 }

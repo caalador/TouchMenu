@@ -2,6 +2,7 @@ package org.vaadin.touchmenu;
 
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonRpc;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonState;
@@ -35,6 +36,11 @@ public class TouchMenuButton extends AbstractComponent {
         setCaption(caption);
         setWidth(50, Unit.PIXELS);
         setHeight(50, Unit.PIXELS);
+    }
+
+    public TouchMenuButton(String caption, Resource icon) {
+        this(caption);
+        setIcon(icon);
     }
 
     @Override

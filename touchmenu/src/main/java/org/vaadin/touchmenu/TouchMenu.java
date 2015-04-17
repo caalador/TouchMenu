@@ -82,6 +82,30 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         getState().arrowNavigationEnabled = arrowNavigationEnabled;
     }
 
+    /**
+     * Set if the component should use given button size for positioning calculations,
+     * or automatically use the size of the first button.
+     *
+     * @param useDefinedButtonSize Use given button size.
+     */
+    public void setUseDefinedButtonSize(boolean useDefinedButtonSize) {
+        getState().useDefinedButtonSize = useDefinedButtonSize;
+    }
+
+    /**
+     * Set the button size we want to calculate button positioning with.
+     * Note! Setting button size will enable using defined button size.
+     *
+     * @param width default button width
+     * @param height default button height
+     */
+    public void setButtonSize(int width, int height) {
+        getState().buttonWidth = width;
+        getState().buttonHeight = height;
+
+        setUseDefinedButtonSize(true);
+    }
+
     @Override
     protected TouchMenuState getState() {
         return (TouchMenuState) super.getState();

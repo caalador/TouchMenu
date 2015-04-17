@@ -18,4 +18,7 @@ public class TouchMenuState extends AbstractComponentState {
     public boolean animate = true;
     public boolean arrowNavigationEnabled = true;
 
+    public boolean useDefinedButtonSize = false;
+    public int buttonWidth, buttonHeight;
+
 }

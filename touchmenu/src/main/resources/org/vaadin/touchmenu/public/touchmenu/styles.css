@@ -5,9 +5,11 @@ div.c-touchmenu {
     -ms-user-select: none;
 }
 
+/* Touch menu target
 .c-touchmenu {
-    background-color: floralwhite;
+    background-color: linen;
 }
+*/
 
 .c-touchmenu .touch-menu-button {
     text-align: center;
@@ -27,11 +29,18 @@ div.c-touchmenu {
 
 .c-touchmenu button.left-navigation,
 .c-touchmenu button.right-navigation {
-    background-color: linen;
+    background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
     border: none;
 }
+
+/* Hover button target
+.c-touchmenu button.left-navigation:hover:enabled,
+.c-touchmenu button.right-navigation:hover:enabled {
+    background-color: lightgray;
+}
+*/
 
 .c-touchmenu button.left-navigation:disabled,
 .c-touchmenu button.right-navigation:disabled {

@@ -36,11 +36,17 @@ $darkgreen: darken($green, 30%);
 
   .touch-menu-button {
     color: whitesmoke;
-    background-image: url(TouchButton-50x50.png);
+    font-weight: bold;
+    text-shadow: 3px 3px 2px black;
+    background-image: url(images/TouchButton-50x50.png);
     background-repeat: no-repeat;
     background-position: center;
     &.hundred {
-      background-image: url(TouchButton-100x100.png);
+      background-image: url(images/TouchButton-100x100.png);
+      &.position img.v-icon {
+        position: relative;
+        top: 13px;
+      }
     }
   }
 }

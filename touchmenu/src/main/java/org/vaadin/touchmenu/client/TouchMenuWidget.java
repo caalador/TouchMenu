@@ -55,6 +55,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     private boolean useArrows = true;
     private boolean move = false;
     private boolean dragged = false;
+    private boolean definedSizes = false;
     protected boolean animate;
 
     private int endValue = 0;
@@ -64,6 +65,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     private int maxValue = 0;
 
     public TouchMenuButtonWidget mouseDownButton;
+    protected int definedWidth, definedHeight;
 
 
     public TouchMenuWidget() {
@@ -71,20 +73,6 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         getElement().getStyle().setPosition(Style.Position.RELATIVE);
 
         setStyleName(CLASSNAME);
-
-        // Add mouse event handlers
-        addDomHandler(this, MouseDownEvent.getType());
-        addDomHandler(this, MouseMoveEvent.getType());
-        addDomHandler(this, MouseUpEvent.getType());
-        addDomHandler(this, MouseOutEvent.getType());
-        addDomHandler(this, ClickEvent.getType());
-        if (TouchEvent.isSupported()) {
-            // Add touch event handlers
-            addDomHandler(this, TouchStartEvent.getType());
-            addDomHandler(this, TouchMoveEvent.getType());
-            addDomHandler(this, TouchEndEvent.getType());
-        }
-
 
         navigateLeft = new Button();
         navigateRight = new Button();
@@ -134,6 +122,19 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         touchView = new AbsolutePanel();
         touchView.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         touchView.setHeight("100%");
+
+        // Add mouse event handlers
+        touchView.addDomHandler(this, MouseDownEvent.getType());
+        touchView.addDomHandler(this, MouseMoveEvent.getType());
+        touchView.addDomHandler(this, MouseUpEvent.getType());
+        touchView.addDomHandler(this, MouseOutEvent.getType());
+        touchView.addDomHandler(this, ClickEvent.getType());
+        if (TouchEvent.isSupported()) {
+            // Add touch event handlers
+            touchView.addDomHandler(this, TouchStartEvent.getType());
+            touchView.addDomHandler(this, TouchMoveEvent.getType());
+            touchView.addDomHandler(this, TouchEndEvent.getType());
+        }
 
         touchView.add(touchArea);
 
@@ -189,6 +190,12 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     public void setRows(int rows) {
         this.rows = rows;
+        layoutWidgets();
+        transitionToColumn();
+    }
+
+    public void setUseDefinedSizes(boolean useDefinedButtonSize) {
+        definedSizes = useDefinedButtonSize;
         layoutWidgets();
         transitionToColumn();
     }
@@ -277,7 +284,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             firstVisibleColumn = 0;
             transitionToColumn();
         } else if (touchArea.getElement().getOffsetLeft() < -(endValue - touchView.getOffsetWidth())) {
-            firstVisibleColumn = (endValue - touchView.getOffsetWidth()) / step;
+            firstVisibleColumn = maxValue;
             transitionToColumn();
         } else {
             int firstVisible = Math.abs(touchView.getWidgetLeft(touchArea) / step);
@@ -349,17 +356,17 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     }
 
     @Override
+    public void onTouchStart(TouchStartEvent touchStartEvent) {
+
+    }
+
+    @Override
     public void onTouchEnd(TouchEndEvent touchEndEvent) {
 
     }
 
     @Override
     public void onTouchMove(TouchMoveEvent touchMoveEvent) {
-
-    }
-
-    @Override
-    public void onTouchStart(TouchStartEvent touchStartEvent) {
 
     }
 
@@ -408,8 +415,15 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             return;
         }
 
-        int itemWidth = widgets.get(0).getElement().getClientWidth();
-        int itemHeight = widgets.get(0).getElement().getClientHeight();
+        int itemWidth;
+        int itemHeight;
+        if(definedSizes) {
+            itemWidth = definedWidth;
+            itemHeight = definedHeight;
+        }else {
+            itemWidth = widgets.get(0).getElement().getClientWidth();
+            itemHeight = widgets.get(0).getElement().getClientHeight();
+        }
 
         int columnMargin = (int) Math.ceil((touchViewWidth / columns - itemWidth) / 2);
         int rowMargin = (int) Math.ceil((touchViewHeight / rows - itemHeight) / 2);
