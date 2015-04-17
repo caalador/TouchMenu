@@ -2,9 +2,14 @@ package org.vaadin.touchmenu.client.button;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.VConsole;
 import com.vaadin.client.ui.Icon;
 
 import java.util.LinkedList;
@@ -13,7 +18,7 @@ import java.util.List;
 /**
  * @author Mikael Grankvist - Vaadin }>
  */
-public class TouchMenuButtonWidget extends Widget implements ClickHandler {
+public class TouchMenuButtonWidget extends Widget implements ClickHandler, TouchEndHandler {
 
     public static final String CLASSNAME = "touch-menu-button";
 
@@ -34,6 +39,9 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
         getElement().appendChild(captionLabel);
 
         addDomHandler(this, ClickEvent.getType());
+        if (TouchEvent.isSupported()) {
+            addDomHandler(this, TouchEndEvent.getType());
+        }
     }
 
     protected void setListener(MenuClickListener listener) {
@@ -53,6 +61,18 @@ public class TouchMenuButtonWidget extends Widget implements ClickHandler {
         }
 
         clickEvent.stopPropagation();
+        if (listener != null) {
+            listener.buttonClicked();
+        }
+    }
+
+    @Override
+    public void onTouchEnd(TouchEndEvent touchEndEvent) {
+        if (ignoreClick) {
+            return;
+        }
+
+        touchEndEvent.stopPropagation();
         if (listener != null) {
             listener.buttonClicked();
         }

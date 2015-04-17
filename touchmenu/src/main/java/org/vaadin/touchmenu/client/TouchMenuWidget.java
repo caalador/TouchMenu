@@ -3,6 +3,7 @@ package org.vaadin.touchmenu.client;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -206,7 +207,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     @Override
     public void onMouseDown(MouseDownEvent mouseDownEvent) {
-        if(mouseDownEvent.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
+        if (mouseDownEvent.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
             return;
         }
         Element relativeElement = mouseDownEvent.getRelativeElement();
@@ -290,7 +291,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             int firstVisible = Math.abs(touchView.getWidgetLeft(touchArea) / step);
 
             // scroll forward column if moved "forward" a bit but not over one column
-            if (start > end && (start-end) < step) {
+            if (start > end && (start - end) < step) {
                 firstVisible++;
             }
 
@@ -349,7 +350,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
     }
 
     private void setTransitionToArea() {
-        if(animate) {
+        if (animate) {
             addStyleVersions(touchArea.getElement().getStyle(), "transition", "all 1s ease");
             addStyleVersions(touchArea.getElement().getStyle(), "transitionProperty", "left");
         }
@@ -357,17 +358,51 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     @Override
     public void onTouchStart(TouchStartEvent touchStartEvent) {
+        VConsole.log(" === TouchStart");
+        Element relativeElement = touchStartEvent.getRelativeElement();
+        checkForButtonWidget(touchStartEvent.getNativeEvent());
+
+        removeStyleVersions(touchArea.getElement().getStyle(), "transition");
+        removeStyleVersions(touchArea.getElement().getStyle(), "transitionProperty");
+        touchStartEvent.preventDefault();
+        Touch touch = touchStartEvent.getTouches().get(0);
+        xDown = touch.getPageX();
+        start = touch.getPageX();
 
     }
 
     @Override
     public void onTouchEnd(TouchEndEvent touchEndEvent) {
-
+        move = false;
+        Touch touch = touchEndEvent.getTouches().get(0);
+        if(touch != null) {
+            end = touch.getPageX();
+        }
+        if (dragged) {
+            touchEndEvent.preventDefault();
+            VConsole.log(" === TouchEnd");
+            moveEnd();
+        }
     }
 
     @Override
     public void onTouchMove(TouchMoveEvent touchMoveEvent) {
+        int current = touchArea.getElement().getOffsetLeft();
+        Touch touch = touchMoveEvent.getTouches().get(0);
+        if (Math.abs(touch.getPageX() - xDown) < 5) {
+            return;
 
+        }
+        dragged = true;
+        VConsole.log(" === TouchMove");
+
+        current += touch.getPageX() - xDown;
+        xDown = touch.getPageX();
+
+        touchArea.getElement().getStyle().setLeft(current, Style.Unit.PX);
+        if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {
+            mouseDownButton.ignoreClick(true);
+        }
     }
 
     public void clear() {
@@ -417,10 +452,10 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
         int itemWidth;
         int itemHeight;
-        if(definedSizes) {
+        if (definedSizes) {
             itemWidth = definedWidth;
             itemHeight = definedHeight;
-        }else {
+        } else {
             itemWidth = widgets.get(0).getElement().getClientWidth();
             itemHeight = widgets.get(0).getElement().getClientHeight();
         }
@@ -472,7 +507,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         }
 
         endValue = left + step - columnMargin;
-        maxValue -= columns-1;
+        maxValue -= columns - 1;
     }
 
     private void addStyleVersions(Style style, String baseProperty, String value) {
