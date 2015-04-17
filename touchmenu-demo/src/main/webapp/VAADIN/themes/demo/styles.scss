@@ -48,5 +48,9 @@ $darkgreen: darken($green, 30%);
         top: 13px;
       }
     }
+
+    &.orange {
+      border: 2px solid orange;
+    }
   }
 }

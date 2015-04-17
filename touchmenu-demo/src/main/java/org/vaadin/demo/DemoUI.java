@@ -8,8 +8,10 @@ import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -29,6 +31,11 @@ public class DemoUI extends UI {
     private TextField width, height, rows, columns;
     private CheckBox animate, from, useArrows;
     int next = 0;
+    private Layout buttonLayout;
+    private TextField buttonWidth, buttonHeight, caption;
+    private boolean updating = false;
+    private TouchMenuButton selection;
+    private TouchMenu touchMenu;
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.demo.DemoWidgetSet")
@@ -37,8 +44,8 @@ public class DemoUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        final TouchMenu component = new TouchMenu(2, 3);
-        component.setButtonSize(50, 50);
+        touchMenu = new TouchMenu(2, 3);
+        touchMenu.setButtonSize(50, 50);
 
         String sizeW = "500px";
         String sizeH = "300px";
@@ -50,10 +57,10 @@ public class DemoUI extends UI {
         height.setValue(sizeH);
         rows = new TextField("Rows");
         rows.setImmediate(true);
-        rows.setValue(Integer.toString(component.getRows()));
+        rows.setValue(Integer.toString(touchMenu.getRows()));
         columns = new TextField("Columns");
         columns.setImmediate(true);
-        columns.setValue(Integer.toString(component.getColumns()));
+        columns.setValue(Integer.toString(touchMenu.getColumns()));
         animate = new CheckBox("Animate");
         animate.setValue(true);
         animate.setImmediate(true);
@@ -66,49 +73,49 @@ public class DemoUI extends UI {
         width.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setWidth(width.getValue());
+                touchMenu.setWidth(width.getValue());
             }
         });
 
         height.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setHeight(height.getValue());
+                touchMenu.setHeight(height.getValue());
             }
         });
 
         rows.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setRows(Integer.parseInt(rows.getValue()));
+                touchMenu.setRows(Integer.parseInt(rows.getValue()));
             }
         });
 
         columns.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setColumns(Integer.parseInt(columns.getValue()));
+                touchMenu.setColumns(Integer.parseInt(columns.getValue()));
             }
         });
 
         animate.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setAnimate(animate.getValue());
+                touchMenu.setAnimate(animate.getValue());
             }
         });
 
         from.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setDirection(from.getValue() ? Direction.IN_FROM_SAME : Direction.IN_FROM_OPPOSITE);
+                touchMenu.setDirection(from.getValue() ? Direction.IN_FROM_SAME : Direction.IN_FROM_OPPOSITE);
             }
         });
 
         useArrows.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                component.setArrowNavigationEnabled(useArrows.getValue());
+                touchMenu.setArrowNavigationEnabled(useArrows.getValue());
             }
         });
         HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
@@ -119,53 +126,105 @@ public class DemoUI extends UI {
 //        hl2.addComponent(sizes);
         hl2.setSpacing(true);
 
-        // Initialize our new UI component
+        // Initialize our new UI touchMenu
         TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
         button.setCaption("Cake");
         button.setWidth(100, Unit.PIXELS);
         button.setHeight(100, Unit.PIXELS);
-        component.addComponent(button);
+        touchMenu.addComponent(button);
 
         button = getButton();
         button.setIcon(null);
-        component.addComponent(button);
+        touchMenu.addComponent(button);
 
         button = getButton("capsule-48x48", "hundred", "position");
         button.setCaption("Capsule button");
         button.setHeight(100, Unit.PIXELS);
         button.setWidth(100, Unit.PIXELS);
-        component.addComponent(button);
+        touchMenu.addComponent(button);
 
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
-        component.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
 
         button = getButton();
         button.setWidth(75, Unit.PIXELS);
         button.setStyleName("hundred");
-        component.addComponent(button);
+        touchMenu.addComponent(button);
 
-        component.addComponent(getButton());
-        component.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
 
         // Show it in the middle of the screen
         final VerticalLayout layout = new VerticalLayout();
         layout.setStyleName("demoContentLayout");
         layout.setSizeFull();
-        layout.addComponents(hl, hl2, component);
-        layout.setComponentAlignment(component, Alignment.MIDDLE_CENTER);
-        layout.setExpandRatio(component, 1);
+        buttonLayout = buttonInfoLayout();
+        layout.addComponents(hl, hl2, buttonLayout, touchMenu);
+        layout.setComponentAlignment(touchMenu, Alignment.MIDDLE_CENTER);
+        layout.setExpandRatio(touchMenu, 1);
         setContent(layout);
 
     }
 
+    private Layout buttonInfoLayout() {
+        final HorizontalLayout layout = new HorizontalLayout();
+
+        layout.setSpacing(true);
+
+        buttonWidth = new TextField("Button Width");
+        buttonWidth.setImmediate(true);
+        buttonWidth.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!updating) {
+                    selection.setWidth(buttonWidth.getValue());
+                    selection.addStyleName("orange");
+                }
+            }
+        });
+        buttonHeight = new TextField("Button Height");
+        buttonHeight.setImmediate(true);
+        buttonHeight.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!updating) {
+                    selection.setHeight(buttonHeight.getValue());
+                    selection.addStyleName("orange");
+                }
+            }
+        });
+        caption = new TextField("Button caption");
+        caption.setImmediate(true);
+        caption.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!updating) {
+                    selection.setCaption(caption.getValue());
+                }
+            }
+        });
+        Button removeButton = new Button("Remove", new Button.ClickListener(){
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                touchMenu.removeComponent(selection);
+                layout.setVisible(false);
+            }
+        });
+        layout.addComponents(caption, buttonWidth, buttonHeight, removeButton);
+        layout.setVisible(false);
+
+        return layout;
+    }
+
     private TouchMenuButton getButton(String icon, String... styles) {
         TouchMenuButton button = getButton(icon);
-        for(String style: styles) {
+        for (String style : styles) {
             button.addStyleName(style);
         }
         return button;
@@ -179,6 +238,7 @@ public class DemoUI extends UI {
             @Override
             public void buttonClicked(TouchMenuButton button) {
                 Notification.show("Button clicked! " + button.getId());
+                editButton(button);
             }
         });
         return button;
@@ -192,9 +252,21 @@ public class DemoUI extends UI {
             @Override
             public void buttonClicked(TouchMenuButton button) {
                 Notification.show("Button clicked! " + button.getId());
+                editButton(button);
             }
         });
         return button;
+    }
+
+    private void editButton(TouchMenuButton button) {
+        selection = button;
+        buttonLayout.setVisible(true);
+
+        updating = true;
+        buttonHeight.setValue(button.getHeight() + "" + button.getHeightUnits());
+        buttonWidth.setValue(button.getWidth() + "" + button.getWidthUnits());
+        caption.setValue(button.getCaption());
+        updating = false;
     }
 
 
