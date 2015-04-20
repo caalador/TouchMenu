@@ -127,6 +127,14 @@ public class DemoUI extends UI {
         hl2.setSpacing(true);
 
         // Initialize our new UI touchMenu
+        touchMenu.addTouchMenuListener(new TouchMenu.TouchMenuListener() {
+            @Override
+            public void buttonClicked(TouchMenuButton button) {
+                Notification.show("Button clicked! " + button.getId());
+                editButton(button);
+            }
+        });
+
         TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
         button.setCaption("Cake");
         button.setWidth(100, Unit.PIXELS);
@@ -233,28 +241,12 @@ public class DemoUI extends UI {
     private TouchMenuButton getButton(String icon) {
         TouchMenuButton button = new TouchMenuButton(captions[next % captions.length], new ThemeResource("images/" + icon + ".png"));
         next++;
-
-        button.addButtonClickedListener(new TouchMenuButton.ButtonListener() {
-            @Override
-            public void buttonClicked(TouchMenuButton button) {
-                Notification.show("Button clicked! " + button.getId());
-                editButton(button);
-            }
-        });
         return button;
     }
 
     private TouchMenuButton getButton() {
         TouchMenuButton button = new TouchMenuButton(captions[next % captions.length]);
         next++;
-
-        button.addButtonClickedListener(new TouchMenuButton.ButtonListener() {
-            @Override
-            public void buttonClicked(TouchMenuButton button) {
-                Notification.show("Button clicked! " + button.getId());
-                editButton(button);
-            }
-        });
         return button;
     }
 
