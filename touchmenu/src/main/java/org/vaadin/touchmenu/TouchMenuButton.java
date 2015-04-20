@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * A button to be used with the {@link TouchMenu} component.
+ *
  * @author Mikael Grankvist - Vaadin }>
  */
 public class TouchMenuButton extends AbstractComponent {
@@ -62,7 +64,16 @@ public class TouchMenuButton extends AbstractComponent {
         return listeners.remove(listener);
     }
 
+    /**
+     * Button click listener
+     */
     public interface ButtonListener {
+        /**
+         * Called when a {@link TouchMenuButton} has been clicked. A reference to the
+         * {@link TouchMenuButton} is returned.
+         *
+         * @param button {@link TouchMenuButton} that has been clicked.
+         */
         void buttonClicked(TouchMenuButton button);
     }
 }

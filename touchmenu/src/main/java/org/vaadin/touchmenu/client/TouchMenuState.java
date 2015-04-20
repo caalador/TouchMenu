@@ -12,9 +12,6 @@ public class TouchMenuState extends AbstractComponentState {
 
     public Direction direction = Direction.IN_FROM_SAME;
 
-    // Button ID
-    public String selected;
-
     public boolean animate = true;
     public boolean arrowNavigationEnabled = true;
 

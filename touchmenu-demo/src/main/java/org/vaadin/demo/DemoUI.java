@@ -47,6 +47,69 @@ public class DemoUI extends UI {
         touchMenu = new TouchMenu(2, 3);
         touchMenu.setButtonSize(50, 50);
 
+        initMenuControlls();
+
+        HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
+        hl.setSpacing(true);
+
+        // Check boxes + button size drop down
+        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows);
+        hl2.setSpacing(true);
+
+        touchMenu.addTouchMenuListener(new TouchMenu.TouchMenuListener() {
+            @Override
+            public void buttonClicked(TouchMenuButton button) {
+                Notification.show("Button clicked! " + button.getId());
+                editButton(button);
+            }
+        });
+
+        // Add buttons to TouchMenu
+        TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
+        button.setCaption("Cake");
+        button.setWidth(100, Unit.PIXELS);
+        button.setHeight(100, Unit.PIXELS);
+        touchMenu.addComponent(button);
+
+        button = getButton();
+        button.setIcon(null);
+        touchMenu.addComponent(button);
+
+        button = getButton("capsule-48x48", "hundred", "position");
+        button.setCaption("Capsule button");
+        button.setHeight(100, Unit.PIXELS);
+        button.setWidth(100, Unit.PIXELS);
+        touchMenu.addComponent(button);
+
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+
+        button = getButton();
+        button.setWidth(75, Unit.PIXELS);
+        button.setStyleName("hundred");
+        touchMenu.addComponent(button);
+
+        touchMenu.addComponent(getButton());
+        touchMenu.addComponent(getButton());
+
+        // Show it in the middle of the screen
+        final VerticalLayout layout = new VerticalLayout();
+        layout.setStyleName("demoContentLayout");
+        layout.setSizeFull();
+        buttonLayout = buttonInfoLayout();
+        layout.addComponents(hl, hl2, buttonLayout, touchMenu);
+        layout.setComponentAlignment(touchMenu, Alignment.MIDDLE_CENTER);
+        layout.setExpandRatio(touchMenu, 1);
+        setContent(layout);
+
+    }
+
+    private void initMenuControlls() {
         String sizeW = "500px";
         String sizeH = "300px";
         width = new TextField("Width");
@@ -118,65 +181,6 @@ public class DemoUI extends UI {
                 touchMenu.setArrowNavigationEnabled(useArrows.getValue());
             }
         });
-        HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
-        hl.setSpacing(true);
-
-        // Check boxes + button size drop down
-        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows);
-//        hl2.addComponent(sizes);
-        hl2.setSpacing(true);
-
-        // Initialize our new UI touchMenu
-        touchMenu.addTouchMenuListener(new TouchMenu.TouchMenuListener() {
-            @Override
-            public void buttonClicked(TouchMenuButton button) {
-                Notification.show("Button clicked! " + button.getId());
-                editButton(button);
-            }
-        });
-
-        TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
-        button.setCaption("Cake");
-        button.setWidth(100, Unit.PIXELS);
-        button.setHeight(100, Unit.PIXELS);
-        touchMenu.addComponent(button);
-
-        button = getButton();
-        button.setIcon(null);
-        touchMenu.addComponent(button);
-
-        button = getButton("capsule-48x48", "hundred", "position");
-        button.setCaption("Capsule button");
-        button.setHeight(100, Unit.PIXELS);
-        button.setWidth(100, Unit.PIXELS);
-        touchMenu.addComponent(button);
-
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-
-        button = getButton();
-        button.setWidth(75, Unit.PIXELS);
-        button.setStyleName("hundred");
-        touchMenu.addComponent(button);
-
-        touchMenu.addComponent(getButton());
-        touchMenu.addComponent(getButton());
-
-        // Show it in the middle of the screen
-        final VerticalLayout layout = new VerticalLayout();
-        layout.setStyleName("demoContentLayout");
-        layout.setSizeFull();
-        buttonLayout = buttonInfoLayout();
-        layout.addComponents(hl, hl2, buttonLayout, touchMenu);
-        layout.setComponentAlignment(touchMenu, Alignment.MIDDLE_CENTER);
-        layout.setExpandRatio(touchMenu, 1);
-        setContent(layout);
-
     }
 
     private Layout buttonInfoLayout() {

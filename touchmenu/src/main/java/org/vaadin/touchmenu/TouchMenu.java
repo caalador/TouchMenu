@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * A visual menu component.
+ *
  * @author Mikael Grankvist - Vaadin }>
  */
 public class TouchMenu extends AbstractComponentContainer implements HasComponents, TouchMenuButton.ButtonListener {
@@ -26,6 +28,11 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         setHeight("300px");
     }
 
+    /**
+     * Get the current amount of rows to be shown
+     *
+     * @return Current row amount
+     */
     public int getRows() {
         return getState().rows;
     }
@@ -38,6 +45,11 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         markAsDirty();
     }
 
+    /**
+     * Get the current amount of columns to be shown.
+     *
+     * @return Current column amount
+     */
     public int getColumns() {
         return getState().columns;
     }
@@ -50,34 +62,56 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         markAsDirty();
     }
 
+    /**
+     * Get the direction from where the items will come when clicking the arrow button.
+     *
+     * @return Direction for incoming items for arrow button click
+     */
     public Direction getDirection() {
         return getState().direction;
     }
 
+    /**
+     * Set the incoming item direction for arrow button click.
+     *
+     * @param direction Incoming item {@link Direction}
+     */
     public void setDirection(Direction direction) {
         getState().direction = direction;
     }
 
-    public String getSelected() {
-        return getState().selected;
-    }
-
-    public void setSelected(String selected) {
-        getState().selected = selected;
-    }
-
+    /**
+     * Check if the menu positioning is animated.
+     *
+     * @return true if positioning is animated.
+     */
     public boolean isAnimate() {
         return getState().animate;
     }
 
+    /**
+     * Set if item positioning should be animated or just snap into place.
+     *
+     * @param animate true for smooth animated positioning.
+     */
     public void setAnimate(boolean animate) {
         getState().animate = animate;
     }
 
+    /**
+     * Navigation arrows enabled
+     *
+     * @return enabled button navigation.
+     */
     public boolean isArrowNavigationEnabled() {
         return getState().arrowNavigationEnabled;
     }
 
+    /**
+     * Set arrow navigation enabled true to get the left and right navigation arrows to the menu and false to remove them
+     *
+     * @param arrowNavigationEnabled show/hide navigation arrows.
+     */
     public void setArrowNavigationEnabled(boolean arrowNavigationEnabled) {
         getState().arrowNavigationEnabled = arrowNavigationEnabled;
     }
@@ -96,7 +130,7 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
      * Set the button size we want to calculate button positioning with.
      * Note! Setting button size will enable using defined button size.
      *
-     * @param width default button width
+     * @param width  default button width
      * @param height default button height
      */
     public void setButtonSize(int width, int height) {
@@ -111,8 +145,14 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         return (TouchMenuState) super.getState();
     }
 
+    /**
+     * Add component to TouchMenu. Only TouchMenuButton is accepted and any other component will result in a {@link ComponentNotSupportedException}.
+     *
+     * @param c TouchMenuButton to add to TouchMenu
+     * @throws ComponentNotSupportedException Unsupported component
+     */
     @Override
-    public void addComponent(final Component c) {
+    public void addComponent(final Component c) throws ComponentNotSupportedException {
         if (c instanceof TouchMenuButton) {
             componentList.add(c);
             super.addComponent(c);
@@ -136,8 +176,16 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
 
     }
 
+    /**
+     * Replace old component with new component. Only TouchMenuComponent is supported and
+     * all other components will throw a {@link ComponentNotSupportedException}
+     *
+     * @param oldComponent old component to be replaced
+     * @param newComponent new component
+     * @throws ComponentNotSupportedException Unsupported component
+     */
     @Override
-    public void replaceComponent(final Component oldComponent, final Component newComponent) {
+    public void replaceComponent(final Component oldComponent, final Component newComponent) throws ComponentNotSupportedException {
         if (!(newComponent instanceof TouchMenuButton)) {
             throw new ComponentNotSupportedException();
         }
@@ -169,15 +217,36 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         }
     }
 
+    /**
+     * Attach a listener to TouchMenu
+     *
+     * @param listener Listener to attach
+     * @return true if listener was added
+     */
     public boolean addTouchMenuListener(TouchMenuListener listener) {
         return listenerList.add(listener);
     }
 
+    /**
+     * Remove an attached listener from TouchMenu
+     *
+     * @param listener Listener to remove
+     * @return true if this menu contained the specified listener
+     */
     public boolean removeTouchMenuListener(TouchMenuListener listener) {
         return listenerList.remove(listener);
     }
 
+    /**
+     * Interface for listening to TouchMenu events.
+     */
     public interface TouchMenuListener {
+        /**
+         * Called when a {@link TouchMenuButton} has been clicked. A reference to the
+         * {@link TouchMenuButton} is returned.
+         *
+         * @param button Clicked {@link TouchMenuButton}.
+         */
         void buttonClicked(TouchMenuButton button);
     }
 }
