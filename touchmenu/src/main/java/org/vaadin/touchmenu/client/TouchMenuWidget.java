@@ -117,6 +117,8 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         touchArea = new AbsolutePanel();
         touchArea.setHeight("100%");
         touchArea.getElement().setClassName("touch-area");
+        touchArea.getElement().getStyle().setTop(0, Style.Unit.PX);
+        touchArea.getElement().getStyle().setLeft(0, Style.Unit.PX);
         touchArea.getElement().getStyle().setOverflow(Style.Overflow.VISIBLE);
 
         touchView = new AbsolutePanel();
@@ -436,7 +438,7 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         }
     }
 
-    private int step, column;
+    private int step;
 
     public void layoutWidgets() {
         int touchViewWidth = useArrows ? getElement().getClientWidth() - 80 : getElement().getClientWidth();
@@ -463,10 +465,11 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         step = 2 * columnMargin + itemWidth;
 
         int left = columnMargin;
-        column = step + columnMargin;
 
         int item = 0;
         maxValue = 0;
+
+        touchArea.getElement().getStyle().setLeft(-(firstVisibleColumn * step), Style.Unit.PX);
 
         // Position buttons into touchArea.
         // No extra positioning needed as we move touchArea instead of the buttons.

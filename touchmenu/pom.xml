@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vaadin</groupId>
-	<artifactId>touchmenu</artifactId>
+	<artifactId>TouchMenu</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-	<name>MyComponent Add-on</name>
+	<name>TouchMenu</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -129,7 +129,7 @@
 							<!-- Package format version - do not change -->
 							<Vaadin-Package-Version>1</Vaadin-Package-Version>
 							<Vaadin-License-Title>${Vaadin-License-Title}</Vaadin-License-Title>
-							<Vaadin-Widgetsets>org.vaadin.touchmenu.WidgetSet</Vaadin-Widgetsets>
+							<Vaadin-Widgetsets>org.vaadin.touchmenu.TouchMenuWidgetSet</Vaadin-Widgetsets>
 						</manifestEntries>
 					</archive>
 				</configuration>
