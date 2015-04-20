@@ -23,17 +23,18 @@ import org.vaadin.touchmenu.client.Direction;
 import javax.servlet.annotation.WebServlet;
 
 @Theme("demo")
-@Title("MyComponent Add-on Demo")
+@Title("TouchMenu Add-on Demo")
 @SuppressWarnings("serial")
 public class DemoUI extends UI {
 
 
-    private TextField width, height, rows, columns;
-    private CheckBox animate, from, useArrows;
-    int next = 0;
     private Layout buttonLayout;
-    private TextField buttonWidth, buttonHeight, caption;
+    private CheckBox animate, from, useArrows;
+    private TextField width, height, rows, columns, buttonWidth, buttonHeight, caption;
+
     private boolean updating = false;
+    private int next = 0;
+
     private TouchMenuButton selection;
     private TouchMenu touchMenu;
 
@@ -44,25 +45,19 @@ public class DemoUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+        // Init touch menu.
         touchMenu = new TouchMenu(2, 3);
         touchMenu.setButtonSize(50, 50);
+        touchMenu.addTouchMenuListener(touchMenuListener);
 
         initMenuControlls();
 
         HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
         hl.setSpacing(true);
 
-        // Check boxes + button size drop down
         HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows);
         hl2.setSpacing(true);
 
-        touchMenu.addTouchMenuListener(new TouchMenu.TouchMenuListener() {
-            @Override
-            public void buttonClicked(TouchMenuButton button) {
-                Notification.show("Button clicked! " + button.getId());
-                editButton(button);
-            }
-        });
 
         // Add buttons to TouchMenu
         TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
@@ -97,6 +92,7 @@ public class DemoUI extends UI {
         touchMenu.addComponent(getButton());
         touchMenu.addComponent(getButton());
 
+        // Build demo layout
         // Show it in the middle of the screen
         final VerticalLayout layout = new VerticalLayout();
         layout.setStyleName("demoContentLayout");
@@ -110,29 +106,21 @@ public class DemoUI extends UI {
     }
 
     private void initMenuControlls() {
-        String sizeW = "500px";
-        String sizeH = "300px";
-        width = new TextField("Width");
-        width.setImmediate(true);
-        width.setValue(sizeW);
-        height = new TextField("Height");
-        height.setImmediate(true);
-        height.setValue(sizeH);
-        rows = new TextField("Rows");
-        rows.setImmediate(true);
-        rows.setValue(Integer.toString(touchMenu.getRows()));
-        columns = new TextField("Columns");
-        columns.setImmediate(true);
-        columns.setValue(Integer.toString(touchMenu.getColumns()));
-        animate = new CheckBox("Animate");
-        animate.setValue(true);
-        animate.setImmediate(true);
-        from = new CheckBox("From arrow direction");
-        from.setValue(true);
-        from.setImmediate(true);
-        useArrows = new CheckBox("Use arrows");
-        useArrows.setValue(true);
-        useArrows.setImmediate(true);
+        width = newTextField("Width", "500px");
+
+        height = newTextField("Height","300px");
+
+        rows = newTextField("Rows", Integer.toString(touchMenu.getRows()));
+
+        columns = newTextField("Columns", Integer.toString(touchMenu.getColumns()));
+
+        animate = newCheckBox("Animate", touchMenu.isAnimate());
+
+        from = newCheckBox("From arrow direction", touchMenu.getDirection().equals(Direction.IN_FROM_SAME));
+
+        useArrows = newCheckBox("Use arrows", touchMenu.isArrowNavigationEnabled());
+
+        // Add listeners
         width.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
@@ -181,6 +169,21 @@ public class DemoUI extends UI {
                 touchMenu.setArrowNavigationEnabled(useArrows.getValue());
             }
         });
+    }
+
+    private TextField newTextField(String caption, String value) {
+        TextField textField = new TextField(caption);
+        textField.setImmediate(true);
+        textField.setValue(value);
+
+        return textField;
+    }
+
+    private CheckBox newCheckBox(String caption, boolean value) {
+        CheckBox checkBox = new CheckBox(caption);
+        checkBox.setValue(value);
+        checkBox.setImmediate(true);
+return checkBox;
     }
 
     private Layout buttonInfoLayout() {
@@ -268,5 +271,13 @@ public class DemoUI extends UI {
 
     String[] captions = new String[]{
             "Cake", "Capsule button", "Coffee", "Sugar", "Honey", "Rain", "Movies"
+    };
+
+    TouchMenu.TouchMenuListener touchMenuListener = new TouchMenu.TouchMenuListener() {
+        @Override
+        public void buttonClicked(TouchMenuButton button) {
+            Notification.show("Button clicked! " + button.getId());
+            editButton(button);
+        }
     };
 }
