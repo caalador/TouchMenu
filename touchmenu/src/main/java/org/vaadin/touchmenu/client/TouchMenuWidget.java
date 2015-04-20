@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.VConsole;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonWidget;
 
 import java.util.LinkedList;
@@ -210,8 +209,6 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         if (mouseDownEvent.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
             return;
         }
-        Element relativeElement = mouseDownEvent.getRelativeElement();
-        if (!relativeElement.equals(navigateLeft) && !relativeElement.equals(navigateRight)) {
             checkForButtonWidget(mouseDownEvent.getNativeEvent());
 
             removeStyleVersions(touchArea.getElement().getStyle(), "transition");
@@ -220,7 +217,6 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
             move = true;
             xDown = mouseDownEvent.getClientX();
             start = mouseDownEvent.getClientX();
-        }
     }
 
     private void checkForButtonWidget(NativeEvent nativeEvent) {
@@ -358,8 +354,6 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
     @Override
     public void onTouchStart(TouchStartEvent touchStartEvent) {
-        VConsole.log(" === TouchStart");
-        Element relativeElement = touchStartEvent.getRelativeElement();
         checkForButtonWidget(touchStartEvent.getNativeEvent());
 
         removeStyleVersions(touchArea.getElement().getStyle(), "transition");
@@ -378,9 +372,13 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
         if(touch != null) {
             end = touch.getPageX();
         }
+        if (mouseDownButton != null && mouseDownButton.isIgnoreClick()) {
+            touchEndEvent.stopPropagation();
+            mouseDownButton.ignoreClick(false);
+            mouseDownButton = null;
+        }
         if (dragged) {
             touchEndEvent.preventDefault();
-            VConsole.log(" === TouchEnd");
             moveEnd();
         }
     }
@@ -394,7 +392,6 @@ public class TouchMenuWidget extends AbsolutePanel implements MouseDownHandler, 
 
         }
         dragged = true;
-        VConsole.log(" === TouchMove");
 
         current += touch.getPageX() - xDown;
         xDown = touch.getPageX();

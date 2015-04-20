@@ -2,18 +2,13 @@ package org.vaadin.touchmenu.client.button;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
 import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.VConsole;
 import com.vaadin.client.ui.Icon;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Mikael Grankvist - Vaadin }>
