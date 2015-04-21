@@ -46,6 +46,10 @@ div.c-touchmenu {
 .c-touchmenu button.right-navigation:disabled {
     opacity: 0.3;
 }
+.c-touchmenu button.left-navigation:focus,
+.c-touchmenu button.right-navigation:focus{
+    outline: none;
+}
 
 .c-touchmenu button.left-navigation {
     background-image: url(image/left-arrow.png);

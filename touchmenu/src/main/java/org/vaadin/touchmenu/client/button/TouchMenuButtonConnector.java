@@ -23,7 +23,9 @@ public class TouchMenuButtonConnector extends AbstractComponentConnector {
         getWidget().setListener(new TouchMenuButtonWidget.MenuClickListener() {
             @Override
             public void buttonClicked() {
-                rpc.buttonClicked();
+                if(getState().enabled) {
+                    rpc.buttonClicked();
+                }
             }
         });
     }

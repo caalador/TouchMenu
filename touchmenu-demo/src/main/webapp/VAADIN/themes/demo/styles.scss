@@ -48,6 +48,13 @@ $darkgreen: darken($green, 30%);
         top: 13px;
       }
     }
+    &.hundred-fidy {
+      background-image: url(images/TouchButton-150x150.png);
+      &.position img.v-icon {
+        position: relative;
+        top: 25px;
+      }
+    }
 
     &.orange {
       border: 2px solid orange;

@@ -10,6 +10,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
@@ -29,8 +30,9 @@ public class DemoUI extends UI {
 
 
     private Layout buttonLayout;
-    private CheckBox animate, from, useArrows;
+    private CheckBox animate, from, useArrows, enabled;
     private TextField width, height, rows, columns, buttonWidth, buttonHeight, caption;
+    private ComboBox background;
 
     private boolean updating = false;
     private int next = 0;
@@ -108,17 +110,20 @@ public class DemoUI extends UI {
     private void initMenuControlls() {
         width = newTextField("Width", "500px");
 
-        height = newTextField("Height","300px");
+        height = newTextField("Height", "300px");
 
         rows = newTextField("Rows", Integer.toString(touchMenu.getRows()));
 
         columns = newTextField("Columns", Integer.toString(touchMenu.getColumns()));
 
         animate = newCheckBox("Animate", touchMenu.isAnimate());
+        animate.setDescription("Set if end positioning should be animated or just snap");
 
         from = newCheckBox("From arrow direction", touchMenu.getDirection().equals(Direction.IN_FROM_SAME));
+        from.setDescription("Decide where the items should come in from when clicking an side arrow");
 
         useArrows = newCheckBox("Use arrows", touchMenu.isArrowNavigationEnabled());
+        useArrows.setDescription("Show/hide the naviagtion arrows");
 
         // Add listeners
         width.addValueChangeListener(new Property.ValueChangeListener() {
@@ -183,7 +188,7 @@ public class DemoUI extends UI {
         CheckBox checkBox = new CheckBox(caption);
         checkBox.setValue(value);
         checkBox.setImmediate(true);
-return checkBox;
+        return checkBox;
     }
 
     private Layout buttonInfoLayout() {
@@ -214,6 +219,7 @@ return checkBox;
             }
         });
         caption = new TextField("Button caption");
+        caption.setDescription("Change the button caption");
         caption.setImmediate(true);
         caption.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
@@ -223,7 +229,47 @@ return checkBox;
                 }
             }
         });
-        Button removeButton = new Button("Remove", new Button.ClickListener(){
+        enabled = newCheckBox("Enabled", false);
+        enabled.setDescription("Enable or disable selected button. NOTE! if you click another button this button will stay disabled as you cant 'select' it again.");
+        enabled.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (!updating) {
+                    selection.setEnabled(enabled.getValue());
+                }
+            }
+        });
+        background = new ComboBox("Background");
+        background.setNullSelectionAllowed(false);
+        background.addItem("50x50");
+        background.addItem("100x100");
+        background.addItem("150x150");
+
+        background.setDescription("Background is just a css style name that has a predefined image of given size.");
+
+        background.select("50x50");
+
+        background.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (updating) {
+                    return;
+                }
+
+                if (background.getValue().equals("50x50")) {
+                    selection.removeStyleName("hundred");
+                    selection.removeStyleName("hundred-fidy");
+                } else if (background.getValue().equals("100x100")) {
+                    selection.removeStyleName("hundred-fidy");
+                    selection.addStyleName("hundred");
+                } else if (background.getValue().equals("150x150")) {
+                    selection.removeStyleName("hundred");
+                    selection.addStyleName("hundred-fidy");
+                }
+            }
+        });
+
+        Button removeButton = new Button("Remove", new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -231,7 +277,9 @@ return checkBox;
                 layout.setVisible(false);
             }
         });
-        layout.addComponents(caption, buttonWidth, buttonHeight, removeButton);
+        layout.addComponents(caption, buttonWidth, buttonHeight, background, enabled, removeButton);
+        layout.setComponentAlignment(enabled, Alignment.BOTTOM_CENTER);
+        layout.setComponentAlignment(removeButton, Alignment.BOTTOM_CENTER);
         layout.setVisible(false);
 
         return layout;
@@ -265,6 +313,8 @@ return checkBox;
         buttonHeight.setValue(button.getHeight() + "" + button.getHeightUnits());
         buttonWidth.setValue(button.getWidth() + "" + button.getWidthUnits());
         caption.setValue(button.getCaption());
+        enabled.setValue(button.isEnabled());
+        background.setValue(button.getStyleName().contains("hundred-fidy") ? "150x150" : button.getStyleName().contains("hundred") ? "100x100" : "50x50");
         updating = false;
     }
 
