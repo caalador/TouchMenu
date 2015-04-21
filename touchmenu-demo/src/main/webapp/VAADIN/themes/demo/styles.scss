@@ -50,9 +50,13 @@ $darkgreen: darken($green, 30%);
     }
     &.hundred-fidy {
       background-image: url(images/TouchButton-150x150.png);
+      .touch-menu-button-caption {
+        position: relative;
+        top: 15px;
+      }
       &.position img.v-icon {
         position: relative;
-        top: 25px;
+        top: 33px;
       }
     }
 
