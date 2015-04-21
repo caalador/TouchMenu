@@ -51,15 +51,16 @@ Another way of debugging client-side is superdev mode. To enable it, uncomment d
  
 ## Release notes
 
-### Version 1.0-SNAPSHOT
-- ...
-- ...
+### Version 1.0.0
+- Vaadin 7 compatible version
+- Free button sizes
+- Support for Touch devices
+- Easier theming of component parts
 
 ## Roadmap
 
 This component is developed as a hobby with no public roadmap or any guarantees of upcoming releases. That said, the following features are planned for upcoming releases:
-- ...
-- ...
+- No new features have been planned. You may add your Enhancement requests to the issue tracker.
 
 ## Issue tracking
 
@@ -87,24 +88,12 @@ TouchMenu is written by <Mikael>
 
 Here is a simple example on how to try out the add-on component:
 
-<...>
+<
+TouchMenu touchMenu = new TouchMenu(3, 4);
+TouchMenuButton button = new TouchMenuButton("Button caption");
+touchMenu.addComponent(button);
+
+mainLayout.addComponent(touchMenu);
+>
 
 For a more comprehensive example, see src/test/java/org/vaadin/template/demo/DemoUI.java
-
-## Features
-
-### Feature A
-
-<...>
-
-### Feature B
-
-<...>
-
-### Feature C
-
-<...>
-
-## API
-
-MyComponent JavaDoc is available online at <...>
