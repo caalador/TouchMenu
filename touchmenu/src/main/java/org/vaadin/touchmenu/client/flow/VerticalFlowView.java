@@ -17,9 +17,9 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * @author Mikael Grankvist - Vaadin }>
  */
-public class HorizontalFlowView extends AbstractFlowView {
+public class VerticalFlowView extends AbstractFlowView {
 
-    public HorizontalFlowView(AbsolutePanel touchView) {
+    public VerticalFlowView(AbsolutePanel touchView) {
         super(touchView);
 
         setHeight("100%");
@@ -56,24 +56,24 @@ public class HorizontalFlowView extends AbstractFlowView {
         int columnMargin = (int) Math.ceil((touchViewWidth / columns - itemWidth) / 2);
         int rowMargin = (int) Math.ceil((touchViewHeight / rows - itemHeight) / 2);
 
-        step = 2 * columnMargin + itemWidth;
+        step = 2 * rowMargin + itemHeight;
 
-        int left = columnMargin;
+        int left = rowMargin;
 
         int item = 0;
         maxValue = 0;
 
-        getElement().getStyle().setLeft(-(firstVisibleColumn * step), Style.Unit.PX);
+        getElement().getStyle().setTop(-(firstVisibleColumn * step), Style.Unit.PX);
 
         // Position buttons into touchArea.
         // No extra positioning needed as we move touchArea instead of the buttons.
         for (Widget button : widgets) {
-            if (item > 0 && item % rows == 0) {
+            if (item > 0 && item % columns == 0) {
                 left += step;
                 maxValue++;
             }
-            int buttonLeft = left;
-            int buttonTop = rowMargin + ((item % rows) * (2 * rowMargin + itemHeight));
+            int buttonLeft = rowMargin + ((item % columns) * (2 * columnMargin + itemWidth));
+            int buttonTop = left;
 
             int buttonWidth = button.getElement().getClientWidth();
             if (buttonWidth != itemWidth) {
@@ -100,8 +100,8 @@ public class HorizontalFlowView extends AbstractFlowView {
             item++;
         }
 
-        endValue = left + step - columnMargin;
-        maxValue -= columns - 1;
+        endValue = left + step - rowMargin;
+        maxValue -= rows - 1;
 
     }
 
@@ -109,14 +109,14 @@ public class HorizontalFlowView extends AbstractFlowView {
     public void moveEnd() {
         dragged = false;
 
-        if (getElement().getOffsetLeft() > 0) {
+        if (getElement().getOffsetHeight() > 0) {
             firstVisibleColumn = 0;
             transitionToColumn();
-        } else if (getElement().getOffsetLeft() < -(endValue - touchView.getOffsetWidth())) {
+        } else if (getElement().getOffsetHeight() < -(endValue - touchView.getOffsetHeight())) {
             firstVisibleColumn = maxValue;
             transitionToColumn();
         } else {
-            int firstVisible = Math.abs(touchView.getWidgetLeft(this) / step);
+            int firstVisible = Math.abs(touchView.getWidgetTop(this) / step);
 
             // scroll forward column if moved "forward" a bit but not over one column
             if (start > end && (start - end) < step) {
@@ -141,10 +141,10 @@ public class HorizontalFlowView extends AbstractFlowView {
 
         int value = firstVisibleColumn * step;
 
-        if (value > (endValue - touchView.getOffsetWidth())) {
-            value = (endValue - touchView.getOffsetWidth());
+        if (value > (endValue - touchView.getOffsetHeight())) {
+            value = (endValue - touchView.getOffsetHeight());
         }
-        getElement().getStyle().setLeft(-value, Style.Unit.PX);
+        getElement().getStyle().setTop(-value, Style.Unit.PX);
 
         navigateLeft.setEnabled(true);
         navigateRight.setEnabled(true);
@@ -155,6 +155,7 @@ public class HorizontalFlowView extends AbstractFlowView {
             transparentLast();
         }
     }
+
 
     @Override
     public void onMouseDown(MouseDownEvent mouseDownEvent) {
@@ -167,18 +168,18 @@ public class HorizontalFlowView extends AbstractFlowView {
         removeStyleVersions(getElement().getStyle(), "transitionProperty");
         mouseDownEvent.preventDefault();
         move = true;
-        down = mouseDownEvent.getClientX();
-        start = mouseDownEvent.getClientX();
+        down = mouseDownEvent.getClientY();
+        start = mouseDownEvent.getClientY();
     }
 
     @Override
     public void onMouseMove(MouseMoveEvent mouseMoveEvent) {
         if (move) {
-            int current = getElement().getOffsetLeft();
-            current += mouseMoveEvent.getClientX() - down;
-            down = mouseMoveEvent.getClientX();
+            int current = getElement().getOffsetTop();
+            current += mouseMoveEvent.getClientY() - down;
+            down = mouseMoveEvent.getClientY();
 
-            getElement().getStyle().setLeft(current, Style.Unit.PX);
+            getElement().getStyle().setTop(current, Style.Unit.PX);
             if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {
                 mouseDownButton.ignoreClick(true);
             }
@@ -189,7 +190,7 @@ public class HorizontalFlowView extends AbstractFlowView {
     @Override
     public void onMouseUp(MouseUpEvent mouseUpEvent) {
         move = false;
-        end = mouseUpEvent.getClientX();
+        end = mouseUpEvent.getClientY();
         if (dragged)
             moveEnd();
     }
@@ -197,7 +198,7 @@ public class HorizontalFlowView extends AbstractFlowView {
     @Override
     public void onMouseOut(MouseOutEvent mouseOutEvent) {
         move = false;
-        end = mouseOutEvent.getClientX();
+        end = mouseOutEvent.getClientY();
         if (dragged)
             moveEnd();
     }
@@ -219,8 +220,8 @@ public class HorizontalFlowView extends AbstractFlowView {
         removeStyleVersions(getElement().getStyle(), "transitionProperty");
         touchStartEvent.preventDefault();
         Touch touch = touchStartEvent.getTouches().get(0);
-        down = touch.getPageX();
-        start = touch.getPageX();
+        down = touch.getPageY();
+        start = touch.getPageY();
 
     }
 
@@ -229,7 +230,7 @@ public class HorizontalFlowView extends AbstractFlowView {
         move = false;
         Touch touch = touchEndEvent.getTouches().get(0);
         if (touch != null) {
-            end = touch.getPageX();
+            end = touch.getPageY();
         }
         if (mouseDownButton != null && mouseDownButton.isIgnoreClick()) {
             touchEndEvent.stopPropagation();
@@ -244,18 +245,18 @@ public class HorizontalFlowView extends AbstractFlowView {
 
     @Override
     public void onTouchMove(TouchMoveEvent touchMoveEvent) {
-        int current = getElement().getOffsetLeft();
+        int current = getElement().getOffsetTop();
         Touch touch = touchMoveEvent.getTouches().get(0);
-        if (Math.abs(touch.getPageX() - down) < 5) {
+        if (Math.abs(touch.getPageY() - down) < 5) {
             return;
 
         }
         dragged = true;
 
-        current += touch.getPageX() - down;
+        current += touch.getPageY() - down;
         down = touch.getPageX();
 
-        getElement().getStyle().setLeft(current, Style.Unit.PX);
+        getElement().getStyle().setTop(current, Style.Unit.PX);
         if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {
             mouseDownButton.ignoreClick(true);
         }

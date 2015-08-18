@@ -15,6 +15,8 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
  */
 public interface FlowView extends MouseDownHandler, MouseMoveHandler, MouseOutHandler, MouseUpHandler, ClickHandler, TouchStartHandler, TouchMoveHandler, TouchEndHandler {
 
+    void moveEnd();
+
     void transitionToColumn();
 
     void layoutWidgets();

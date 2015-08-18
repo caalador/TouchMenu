@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Button;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonWidget;
 import org.vaadin.touchmenu.client.flow.AbstractFlowView;
 import org.vaadin.touchmenu.client.flow.HorizontalFlowView;
+import org.vaadin.touchmenu.client.flow.VerticalFlowView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class TouchMenuWidget extends AbsolutePanel {
 //    protected boolean animate;
 
 //    private int endValue = 0;
-//    private int xDown = 0;
+//    private int down = 0;
 //    private int start = 0;
 //    private int end = 0;
 //    private int maxValue = 0;
@@ -106,7 +107,8 @@ public class TouchMenuWidget extends AbsolutePanel {
         touchView.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         touchView.setHeight("100%");
 
-        touchArea = new HorizontalFlowView(touchView);
+//        touchArea = new HorizontalFlowView(touchView);
+        touchArea = new VerticalFlowView(touchView);
         touchArea.navigateLeft = navigateLeft;
         touchArea.navigateRight = navigateRight;
 
@@ -206,7 +208,7 @@ public class TouchMenuWidget extends AbsolutePanel {
 //            removeStyleVersions(touchArea.getElement().getStyle(), "transitionProperty");
 //            mouseDownEvent.preventDefault();
 //            move = true;
-//            xDown = mouseDownEvent.getClientX();
+//            down = mouseDownEvent.getClientX();
 //            start = mouseDownEvent.getClientX();
 //    }
 //
@@ -229,8 +231,8 @@ public class TouchMenuWidget extends AbsolutePanel {
 //    public void onMouseMove(MouseMoveEvent mouseMoveEvent) {
 //        if (move) {
 //            int current = touchArea.getElement().getOffsetLeft();
-//            current += mouseMoveEvent.getClientX() - xDown;
-//            xDown = mouseMoveEvent.getClientX();
+//            current += mouseMoveEvent.getClientX() - down;
+//            down = mouseMoveEvent.getClientX();
 //
 //            touchArea.getElement().getStyle().setLeft(current, Style.Unit.PX);
 //            if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {
@@ -350,7 +352,7 @@ public class TouchMenuWidget extends AbsolutePanel {
 //        removeStyleVersions(touchArea.getElement().getStyle(), "transitionProperty");
 //        touchStartEvent.preventDefault();
 //        Touch touch = touchStartEvent.getTouches().get(0);
-//        xDown = touch.getPageX();
+//        down = touch.getPageX();
 //        start = touch.getPageX();
 //
 //    }
@@ -377,14 +379,14 @@ public class TouchMenuWidget extends AbsolutePanel {
 //    public void onTouchMove(TouchMoveEvent touchMoveEvent) {
 //        int current = touchArea.getElement().getOffsetLeft();
 //        Touch touch = touchMoveEvent.getTouches().get(0);
-//        if (Math.abs(touch.getPageX() - xDown) < 5) {
+//        if (Math.abs(touch.getPageX() - down) < 5) {
 //            return;
 //
 //        }
 //        dragged = true;
 //
-//        current += touch.getPageX() - xDown;
-//        xDown = touch.getPageX();
+//        current += touch.getPageX() - down;
+//        down = touch.getPageX();
 //
 //        touchArea.getElement().getStyle().setLeft(current, Style.Unit.PX);
 //        if (mouseDownButton != null && !mouseDownButton.isIgnoreClick()) {

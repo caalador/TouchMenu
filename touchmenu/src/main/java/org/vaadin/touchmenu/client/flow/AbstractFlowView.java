@@ -26,7 +26,7 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
     protected List<Widget> widgets = new LinkedList<Widget>();
 
     public int endValue = 0;
-    protected int xDown = 0;
+    protected int down = 0;
     protected int start = 0;
     protected int end = 0;
     protected int maxValue = 0;
@@ -88,54 +88,6 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
     public void add(Widget w) {
         super.add(w);
         widgets.add(w);
-    }
-    protected void moveEnd() {
-        dragged = false;
-
-        if (getElement().getOffsetLeft() > 0) {
-            firstVisibleColumn = 0;
-            transitionToColumn();
-        } else if (getElement().getOffsetLeft() < -(endValue - touchView.getOffsetWidth())) {
-            firstVisibleColumn = maxValue;
-            transitionToColumn();
-        } else {
-            int firstVisible = Math.abs(touchView.getWidgetLeft(this) / step);
-
-            // scroll forward column if moved "forward" a bit but not over one column
-            if (start > end && (start - end) < step) {
-                firstVisible++;
-            }
-
-            firstVisibleColumn = firstVisible;
-
-            transitionToColumn();
-        }
-    }
-
-    public void transitionToColumn() {
-        if (firstVisibleColumn < 0) {
-            firstVisibleColumn = 0;
-        } else if (firstVisibleColumn > maxValue) {
-            firstVisibleColumn = maxValue;
-        }
-
-        setTransitionToArea();
-
-        int value = firstVisibleColumn * step;
-
-        if (value > (endValue - touchView.getOffsetWidth())) {
-            value = (endValue - touchView.getOffsetWidth());
-        }
-        getElement().getStyle().setLeft(-value, Style.Unit.PX);
-
-        navigateLeft.setEnabled(true);
-        navigateRight.setEnabled(true);
-
-        if (firstVisibleColumn == 0) {
-            transparentFirst();
-        } else if (firstVisibleColumn == maxValue) {
-            transparentLast();
-        }
     }
 
     public void transparentFirst() {
@@ -223,10 +175,10 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
         return null;
     }
 
-    private void setTransitionToArea() {
+    protected void setTransitionToArea() {
         if (animate) {
             addStyleVersions(getElement().getStyle(), "transition", "all 1s ease");
-            addStyleVersions(getElement().getStyle(), "transitionProperty", "left");
+            addStyleVersions(getElement().getStyle(), "transitionProperty", "left top");
         }
     }
 }
