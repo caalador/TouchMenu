@@ -11,6 +11,7 @@ public class TouchMenuState extends AbstractComponentState {
     public int columns;
 
     public Direction direction = Direction.IN_FROM_SAME;
+    public ScrollDirection scrollDirection = ScrollDirection.HORIZONTAL;
 
     public boolean animate = true;
     public boolean arrowNavigationEnabled = true;

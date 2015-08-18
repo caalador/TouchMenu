@@ -55,13 +55,13 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
 
     @OnStateChange("animate")
     void setAnimationEnabled() {
-        getWidget().animate = getState().animate;
+        getWidget().setAnimate(getState().animate);
     }
 
     @OnStateChange("useDefinedButtonSize")
     void setDefinedButtonSizes() {
-        getWidget().definedWidth = getState().buttonWidth;
-        getWidget().definedHeight = getState().buttonHeight;
+        getWidget().setDefinedWidth(getState().buttonWidth);
+        getWidget().setDefinedHeight(getState().buttonHeight);
         getWidget().setUseDefinedSizes(getState().useDefinedButtonSize);
     }
 
