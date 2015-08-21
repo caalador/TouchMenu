@@ -11,8 +11,10 @@ import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
+import com.vaadin.client.VConsole;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonWidget;
 import org.vaadin.touchmenu.client.flow.AbstractFlowView;
 import org.vaadin.touchmenu.client.flow.HorizontalFlowView;
@@ -35,7 +37,7 @@ public class TouchMenuWidget extends AbsolutePanel {
     private AbsolutePanel touchView;
     private AbstractFlowView touchArea;
 
-    private List<TouchMenuButtonWidget> widgets = new LinkedList<TouchMenuButtonWidget>();
+//    private List<TouchMenuButtonWidget> widgets = new LinkedList<TouchMenuButtonWidget>();
 
 //    protected int columns, rows;
 
@@ -57,6 +59,7 @@ public class TouchMenuWidget extends AbsolutePanel {
 //    public TouchMenuButtonWidget mouseDownButton;
 //    protected int definedWidth, definedHeight;
 
+    private List<HandlerRegistration> domHandlers = new LinkedList<HandlerRegistration>();
 
     public TouchMenuWidget() {
         super();
@@ -122,16 +125,16 @@ public class TouchMenuWidget extends AbsolutePanel {
 //        touchArea.getElement().getStyle().setOverflow(Style.Overflow.VISIBLE);
 
         // Add mouse event handlers
-        touchView.addDomHandler(touchArea, MouseDownEvent.getType());
-        touchView.addDomHandler(touchArea, MouseMoveEvent.getType());
-        touchView.addDomHandler(touchArea, MouseUpEvent.getType());
-        touchView.addDomHandler(touchArea, MouseOutEvent.getType());
-        touchView.addDomHandler(touchArea, ClickEvent.getType());
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseDownEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseMoveEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseUpEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseOutEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, ClickEvent.getType()));
         if (TouchEvent.isSupported()) {
             // Add touch event handlers
-            touchView.addDomHandler(touchArea, TouchStartEvent.getType());
-            touchView.addDomHandler(touchArea, TouchMoveEvent.getType());
-            touchView.addDomHandler(touchArea, TouchEndEvent.getType());
+            domHandlers.add(touchView.addDomHandler(touchArea, TouchStartEvent.getType()));
+            domHandlers.add(touchView.addDomHandler(touchArea, TouchMoveEvent.getType()));
+            domHandlers.add(touchView.addDomHandler(touchArea, TouchEndEvent.getType()));
         }
 
         touchView.add(touchArea);
@@ -395,12 +398,12 @@ public class TouchMenuWidget extends AbsolutePanel {
 //    }
 
     public void clear() {
-        widgets.clear();
+//        widgets.clear();
         touchArea.clear();
     }
 
     public void add(TouchMenuButtonWidget widget) {
-        widgets.add(widget);
+//        widgets.add(widget);
         widget.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
         touchArea.add(widget);
     }
@@ -584,5 +587,43 @@ public class TouchMenuWidget extends AbsolutePanel {
 
     public void setAnimate(boolean animate) {
         touchArea.animate = animate;
+    }
+
+    public void setFlowView(ScrollDirection flowView) {
+        touchView.remove(touchArea);
+        for(HandlerRegistration handler : domHandlers) {
+            handler.removeHandler();
+        }
+        domHandlers.clear();
+
+        switch(flowView) {
+            case HORIZONTAL:
+                touchArea = new HorizontalFlowView(touchView);
+                break;
+            case VERTICAL:
+                touchArea = new VerticalFlowView(touchView);
+                break;
+        }
+
+        touchArea.navigateLeft = navigateLeft;
+        touchArea.navigateRight = navigateRight;
+
+        touchArea.transparentFirst();
+
+        // Add mouse event handlers
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseDownEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseMoveEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseUpEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, MouseOutEvent.getType()));
+        domHandlers.add(touchView.addDomHandler(touchArea, ClickEvent.getType()));
+        if (TouchEvent.isSupported()) {
+            // Add touch event handlers
+            domHandlers.add(touchView.addDomHandler(touchArea, TouchStartEvent.getType()));
+            domHandlers.add(touchView.addDomHandler(touchArea, TouchMoveEvent.getType()));
+            domHandlers.add(touchView.addDomHandler(touchArea, TouchEndEvent.getType()));
+        }
+
+        touchView.add(touchArea);
+        VConsole.log(" === added area");
     }
 }

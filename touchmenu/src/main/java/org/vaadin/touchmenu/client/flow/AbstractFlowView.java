@@ -14,7 +14,6 @@ import org.vaadin.touchmenu.client.Direction;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonWidget;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Mikael Grankvist - Vaadin }>
@@ -23,7 +22,7 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
 
     public int rows, columns, step;
 
-    protected List<Widget> widgets = new LinkedList<Widget>();
+    protected LinkedList<Widget> widgets = new LinkedList<Widget>();
 
     public int endValue = 0;
     protected int down = 0;
@@ -52,6 +51,12 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
     }
 
     @Override
+    public void clear() {
+        super.clear();
+        widgets.clear();
+    }
+
+    @Override
     public void setColumns(int columns) {
         this.columns = columns;
         layoutWidgets();
@@ -70,8 +75,8 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
      * Check column amount fits the content area. Else update column amount so that we fit inside.
      */
     public void validateColumns() {
-        if (columns * widgets.get(0).getOffsetWidth() > touchView.getElement().getClientWidth()) {
-            columns = touchView.getElement().getClientWidth() / widgets.get(0).getOffsetWidth();
+        if (!widgets.isEmpty() && columns * widgets.getFirst().getOffsetWidth() > touchView.getElement().getClientWidth()) {
+            columns = touchView.getElement().getClientWidth() / widgets.getFirst().getOffsetWidth();
         }
     }
 
@@ -79,8 +84,8 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
      * Check row amount fits the content area. Else update row amount so that we fit inside.
      */
     public void validateRows() {
-        if (rows * widgets.get(0).getOffsetHeight() > touchView.getElement().getClientHeight()) {
-            rows = touchView.getElement().getClientHeight() / widgets.get(0).getOffsetHeight();
+        if (!widgets.isEmpty() && rows * widgets.getFirst().getOffsetHeight() > touchView.getElement().getClientHeight()) {
+            rows = touchView.getElement().getClientHeight() / widgets.getFirst().getOffsetHeight();
         }
     }
 

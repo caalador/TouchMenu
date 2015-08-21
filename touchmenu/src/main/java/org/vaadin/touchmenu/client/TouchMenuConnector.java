@@ -65,8 +65,33 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
         getWidget().setUseDefinedSizes(getState().useDefinedButtonSize);
     }
 
+    @OnStateChange("scrollDirection")
+    void setFlowView() {
+        VConsole.log(" === scrolldirection");
+        getWidget().setFlowView(getState().scrollDirection);
+
+        getWidget().setRows(getState().rows);
+        getWidget().setColumns(getState().columns);
+        getWidget().setUseArrows(getState().arrowNavigationEnabled);
+        getWidget().setDirection(getState().direction);
+        getWidget().setAnimate(getState().animate);
+        getWidget().setDefinedWidth(getState().buttonWidth);
+        getWidget().setDefinedHeight(getState().buttonHeight);
+        getWidget().setUseDefinedSizes(getState().useDefinedButtonSize);
+
+
+        final List<ComponentConnector> children = getChildComponents();
+        final TouchMenuWidget widget = getWidget();
+        widget.clear();
+        for (final ComponentConnector connector : children) {
+            widget.add((TouchMenuButtonWidget) connector.getWidget());
+        }
+        getWidget().layoutWidgets();
+    }
+
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
+        VConsole.log(" === Adding children");
         final List<ComponentConnector> children = getChildComponents();
         final TouchMenuWidget widget = getWidget();
         widget.clear();

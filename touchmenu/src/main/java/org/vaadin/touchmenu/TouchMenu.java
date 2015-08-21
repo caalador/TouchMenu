@@ -5,6 +5,7 @@ import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 import org.vaadin.touchmenu.client.Direction;
+import org.vaadin.touchmenu.client.ScrollDirection;
 import org.vaadin.touchmenu.client.TouchMenuState;
 
 import java.util.Iterator;
@@ -138,6 +139,10 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         getState().buttonHeight = height;
 
         setUseDefinedButtonSize(true);
+    }
+
+    public void setScrollDirection(ScrollDirection scrollDirection) {
+        getState().scrollDirection = scrollDirection;
     }
 
     @Override

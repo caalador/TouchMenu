@@ -20,6 +20,7 @@ import com.vaadin.ui.VerticalLayout;
 import org.vaadin.touchmenu.TouchMenu;
 import org.vaadin.touchmenu.TouchMenuButton;
 import org.vaadin.touchmenu.client.Direction;
+import org.vaadin.touchmenu.client.ScrollDirection;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -30,7 +31,7 @@ public class DemoUI extends UI {
 
 
     private Layout buttonLayout;
-    private CheckBox animate, from, useArrows, enabled;
+    private CheckBox animate, from, useArrows, enabled, scroll;
     private TextField width, height, rows, columns, buttonWidth, buttonHeight, caption;
     private ComboBox background;
 
@@ -57,7 +58,7 @@ public class DemoUI extends UI {
         HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
         hl.setSpacing(true);
 
-        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows);
+        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows, scroll);
         hl2.setSpacing(true);
 
 
@@ -125,6 +126,9 @@ public class DemoUI extends UI {
         useArrows = newCheckBox("Use arrows", touchMenu.isArrowNavigationEnabled());
         useArrows.setDescription("Show/hide the naviagtion arrows");
 
+        scroll = newCheckBox("Scroll Horizontally", true);
+        scroll.setDescription("Set if scrolling should be horizontal (true) or vertical (false)");
+
         // Add listeners
         width.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
@@ -172,6 +176,12 @@ public class DemoUI extends UI {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 touchMenu.setArrowNavigationEnabled(useArrows.getValue());
+            }
+        });
+        scroll.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                touchMenu.setScrollDirection(scroll.getValue() ? ScrollDirection.HORIZONTAL : ScrollDirection.VERTICAL);
             }
         });
     }
