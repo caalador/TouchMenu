@@ -32,10 +32,6 @@ public class HorizontalFlowView extends AbstractFlowView {
 
     @Override
     public void layoutWidgets() {
-//        int touchViewWidth = useArrows ? getElement().getParentElement().getClientWidth() - 80 : getElement().getParentElement().getClientWidth();
-//        int touchViewHeight = getElement().getParentElement().getClientHeight();
-//        touchView.getElement().getStyle().setWidth(touchViewWidth, Style.Unit.PX);
-
         int touchViewWidth = touchView.getElement().getClientWidth();
         int touchViewHeight = touchView.getElement().getClientHeight();
 

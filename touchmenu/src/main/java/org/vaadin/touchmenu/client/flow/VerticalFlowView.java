@@ -32,10 +32,6 @@ public class VerticalFlowView extends AbstractFlowView {
 
     @Override
     public void layoutWidgets() {
-//        int touchViewWidth = useArrows ? getElement().getParentElement().getClientWidth() - 80 : getElement().getParentElement().getClientWidth();
-//        int touchViewHeight = getElement().getParentElement().getClientHeight();
-//        touchView.getElement().getStyle().setWidth(touchViewWidth, Style.Unit.PX);
-
         int touchViewWidth = touchView.getElement().getClientWidth();
         int touchViewHeight = touchView.getElement().getClientHeight();
 
@@ -109,10 +105,10 @@ public class VerticalFlowView extends AbstractFlowView {
     public void moveEnd() {
         dragged = false;
 
-        if (getElement().getOffsetHeight() > 0) {
+        if (getElement().getOffsetTop() > 0) {
             firstVisibleColumn = 0;
             transitionToColumn();
-        } else if (getElement().getOffsetHeight() < -(endValue - touchView.getOffsetHeight())) {
+        } else if (getElement().getOffsetTop() < -(endValue - touchView.getElement().getOffsetTop())) {
             firstVisibleColumn = maxValue;
             transitionToColumn();
         } else {

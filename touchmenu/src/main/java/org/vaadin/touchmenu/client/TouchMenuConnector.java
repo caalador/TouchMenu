@@ -6,7 +6,6 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.VConsole;
 import com.vaadin.client.annotations.OnStateChange;
-import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractHasComponentsConnector;
 import com.vaadin.client.ui.SimpleManagedLayout;
 import com.vaadin.shared.ui.Connect;
@@ -67,6 +66,10 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
 
     @OnStateChange("scrollDirection")
     void setFlowView() {
+        if (getWidget().getScrollDirection().equals(getState().scrollDirection)) {
+            return;
+        }
+
         VConsole.log(" === scrolldirection");
         getWidget().setFlowView(getState().scrollDirection);
 

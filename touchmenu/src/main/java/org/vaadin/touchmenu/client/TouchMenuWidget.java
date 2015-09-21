@@ -60,6 +60,7 @@ public class TouchMenuWidget extends AbsolutePanel {
 //    protected int definedWidth, definedHeight;
 
     private List<HandlerRegistration> domHandlers = new LinkedList<HandlerRegistration>();
+    private ScrollDirection flowView = ScrollDirection.HORIZONTAL;
 
     public TouchMenuWidget() {
         super();
@@ -110,12 +111,13 @@ public class TouchMenuWidget extends AbsolutePanel {
         touchView.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         touchView.setHeight("100%");
 
+        setFlowView(flowView);
 //        touchArea = new HorizontalFlowView(touchView);
-        touchArea = new VerticalFlowView(touchView);
-        touchArea.navigateLeft = navigateLeft;
-        touchArea.navigateRight = navigateRight;
+//        touchArea = new VerticalFlowView(touchView);
+//        touchArea.navigateLeft = navigateLeft;
+//        touchArea.navigateRight = navigateRight;
 
-        touchArea.transparentFirst();
+//        touchArea.transparentFirst();
 
 //                new AbsolutePanel();
 //        touchArea.setHeight("100%");
@@ -124,20 +126,20 @@ public class TouchMenuWidget extends AbsolutePanel {
 //        touchArea.getElement().getStyle().setLeft(0, Style.Unit.PX);
 //        touchArea.getElement().getStyle().setOverflow(Style.Overflow.VISIBLE);
 
-        // Add mouse event handlers
-        domHandlers.add(touchView.addDomHandler(touchArea, MouseDownEvent.getType()));
-        domHandlers.add(touchView.addDomHandler(touchArea, MouseMoveEvent.getType()));
-        domHandlers.add(touchView.addDomHandler(touchArea, MouseUpEvent.getType()));
-        domHandlers.add(touchView.addDomHandler(touchArea, MouseOutEvent.getType()));
-        domHandlers.add(touchView.addDomHandler(touchArea, ClickEvent.getType()));
-        if (TouchEvent.isSupported()) {
-            // Add touch event handlers
-            domHandlers.add(touchView.addDomHandler(touchArea, TouchStartEvent.getType()));
-            domHandlers.add(touchView.addDomHandler(touchArea, TouchMoveEvent.getType()));
-            domHandlers.add(touchView.addDomHandler(touchArea, TouchEndEvent.getType()));
-        }
-
-        touchView.add(touchArea);
+//        // Add mouse event handlers
+//        domHandlers.add(touchView.addDomHandler(touchArea, MouseDownEvent.getType()));
+//        domHandlers.add(touchView.addDomHandler(touchArea, MouseMoveEvent.getType()));
+//        domHandlers.add(touchView.addDomHandler(touchArea, MouseUpEvent.getType()));
+//        domHandlers.add(touchView.addDomHandler(touchArea, MouseOutEvent.getType()));
+//        domHandlers.add(touchView.addDomHandler(touchArea, ClickEvent.getType()));
+//        if (TouchEvent.isSupported()) {
+//            // Add touch event handlers
+//            domHandlers.add(touchView.addDomHandler(touchArea, TouchStartEvent.getType()));
+//            domHandlers.add(touchView.addDomHandler(touchArea, TouchMoveEvent.getType()));
+//            domHandlers.add(touchView.addDomHandler(touchArea, TouchEndEvent.getType()));
+//        }
+//
+//        touchView.add(touchArea);
 
         add(navigateLeft);
         add(touchView);
@@ -396,7 +398,6 @@ public class TouchMenuWidget extends AbsolutePanel {
 //            mouseDownButton.ignoreClick(true);
 //        }
 //    }
-
     public void clear() {
 //        widgets.clear();
         touchArea.clear();
@@ -577,6 +578,12 @@ public class TouchMenuWidget extends AbsolutePanel {
         touchArea.layoutWidgets();
     }
 
+    @Override
+    protected void onAttach() {
+        super.onAttach();
+        touchArea.layoutWidgets();
+    }
+
     public void setDefinedWidth(int definedWidth) {
         touchArea.definedWidth = definedWidth;
     }
@@ -590,13 +597,16 @@ public class TouchMenuWidget extends AbsolutePanel {
     }
 
     public void setFlowView(ScrollDirection flowView) {
-        touchView.remove(touchArea);
-        for(HandlerRegistration handler : domHandlers) {
+        this.flowView = flowView;
+        if (touchArea != null) {
+            touchView.remove(touchArea);
+        }
+        for (HandlerRegistration handler : domHandlers) {
             handler.removeHandler();
         }
         domHandlers.clear();
 
-        switch(flowView) {
+        switch (flowView) {
             case HORIZONTAL:
                 touchArea = new HorizontalFlowView(touchView);
                 break;
@@ -625,5 +635,9 @@ public class TouchMenuWidget extends AbsolutePanel {
 
         touchView.add(touchArea);
         VConsole.log(" === added area");
+    }
+
+    public ScrollDirection getScrollDirection() {
+        return flowView;
     }
 }
