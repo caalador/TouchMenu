@@ -181,16 +181,7 @@ public class TouchMenuWidget extends AbsolutePanel {
 
     public void setDirection(Direction direction) {
         buttonDirection = direction;
-        int maxValue = (touchArea.endValue - touchView.getOffsetWidth()) / touchArea.step;
-
-        navigateLeft.setEnabled(true);
-        navigateRight.setEnabled(true);
-
-        if (touchArea.firstVisibleColumn == 0) {
-            touchArea.transparentFirst();
-        } else if (touchArea.firstVisibleColumn == maxValue) {
-            touchArea.transparentLast();
-        }
+        touchArea.setDirection(direction);
     }
 
     public void validateRows() {

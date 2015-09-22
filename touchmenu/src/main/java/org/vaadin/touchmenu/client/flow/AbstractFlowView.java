@@ -96,6 +96,20 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
         w.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
     }
 
+    public void setDirection(Direction direction) {
+        buttonDirection = direction;
+        int maxValue = (endValue - touchView.getOffsetWidth()) / step;
+
+        navigateLeft.setEnabled(true);
+        navigateRight.setEnabled(true);
+
+        if (firstVisibleColumn == 0) {
+            transparentFirst();
+        } else if (firstVisibleColumn == maxValue) {
+            transparentLast();
+        }
+    }
+
     public void transparentFirst() {
         switch (buttonDirection) {
             case IN_FROM_OPPOSITE:
