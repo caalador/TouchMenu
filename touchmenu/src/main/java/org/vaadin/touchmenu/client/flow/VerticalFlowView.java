@@ -54,7 +54,7 @@ public class VerticalFlowView extends AbstractFlowView {
 
         step = 2 * rowMargin + itemHeight;
 
-        int left = rowMargin;
+        int top = rowMargin;
 
         int item = 0;
         maxValue = 0;
@@ -65,11 +65,11 @@ public class VerticalFlowView extends AbstractFlowView {
         // No extra positioning needed as we move touchArea instead of the buttons.
         for (Widget button : widgets) {
             if (item > 0 && item % columns == 0) {
-                left += step;
+                top += step;
                 maxValue++;
             }
-            int buttonLeft = rowMargin + ((item % columns) * (2 * columnMargin + itemWidth));
-            int buttonTop = left;
+            int buttonLeft = columnMargin + ((item % columns) * (2 * columnMargin + itemWidth));
+            int buttonTop = top;
 
             int buttonWidth = button.getElement().getClientWidth();
             if (buttonWidth != itemWidth) {
@@ -96,7 +96,7 @@ public class VerticalFlowView extends AbstractFlowView {
             item++;
         }
 
-        endValue = left + step - rowMargin;
+        endValue = top + step - rowMargin;
         maxValue -= rows - 1;
 
     }

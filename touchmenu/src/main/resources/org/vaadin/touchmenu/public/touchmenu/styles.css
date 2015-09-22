@@ -28,7 +28,9 @@ div.c-touchmenu {
 }
 
 .c-touchmenu button.left-navigation,
-.c-touchmenu button.right-navigation {
+.c-touchmenu button.right-navigation,
+.c-touchmenu button.up-navigation,
+.c-touchmenu button.down-navigation {
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
@@ -43,7 +45,9 @@ div.c-touchmenu {
 */
 
 .c-touchmenu button.left-navigation:disabled,
-.c-touchmenu button.right-navigation:disabled {
+.c-touchmenu button.right-navigation:disabled,
+.c-touchmenu button.up-navigation:disabled,
+.c-touchmenu button.down-navigation:disabled {
     opacity: 0.3;
 }
 .c-touchmenu button.left-navigation:focus,
@@ -57,4 +61,12 @@ div.c-touchmenu {
 
 .c-touchmenu button.right-navigation {
     background-image: url(image/right-arrow.png);
+}
+
+.c-touchmenu button.up-navigation {
+    background-image: url(image/up-arrow.png);
+}
+
+.c-touchmenu button.down-navigation {
+    background-image: url(image/down-arrow.png);
 }

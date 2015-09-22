@@ -111,7 +111,7 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
 
     @Override
     public void layout() {
-        getWidget().setViewSize();
+        getWidget().positionElements();
         getWidget().validateColumns();
         getWidget().validateRows();
         getWidget().layoutWidgets();

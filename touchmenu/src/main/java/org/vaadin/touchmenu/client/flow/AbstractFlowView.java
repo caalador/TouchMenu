@@ -93,6 +93,7 @@ public abstract class AbstractFlowView extends AbsolutePanel implements FlowView
     public void add(Widget w) {
         super.add(w);
         widgets.add(w);
+        w.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
     }
 
     public void transparentFirst() {
