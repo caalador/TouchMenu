@@ -94,6 +94,7 @@ public class DemoUI extends UI {
 
         touchMenu.addComponent(getButton());
         touchMenu.addComponent(getButton());
+        touchMenu.setScrollDirection(ScrollDirection.FREE);
 
         // Build demo layout
         // Show it in the middle of the screen

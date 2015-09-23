@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.vaadin.client.VConsole;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonWidget;
 import org.vaadin.touchmenu.client.flow.AbstractFlowView;
+import org.vaadin.touchmenu.client.flow.FreeFlowView;
 import org.vaadin.touchmenu.client.flow.HorizontalFlowView;
 import org.vaadin.touchmenu.client.flow.VerticalFlowView;
 
@@ -140,7 +141,7 @@ public class TouchMenuWidget extends AbsolutePanel {
     public void setUseArrows(boolean useArrows) {
         touchArea.useArrows = useArrows;
         // TODO: Check for direction if navigation on top-bottom or on the sides
-        if (useArrows) {
+        if (useArrows && !flowView.equals(ScrollDirection.FREE)) {
             positionElements();
 
             navigateLeft.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
@@ -240,6 +241,12 @@ public class TouchMenuWidget extends AbsolutePanel {
                 navigateLeft.getElement().setClassName("up-navigation");
                 navigateRight.getElement().setClassName("down-navigation");
                 break;
+            case FREE:
+                touchArea = new FreeFlowView(touchView);
+                navigateLeft.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+                navigateRight.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+                break;
+
         }
 
         touchArea.navigateLeft = navigateLeft;
