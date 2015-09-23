@@ -55,8 +55,8 @@ public class FreeFlowView extends AbstractFlowView {
 
         if (firstVisibleRow < 0) {
             firstVisibleRow = 0;
-        } else if (firstVisibleRow > maxValue) {
-            firstVisibleRow = maxValue;
+        } else if (firstVisibleRow > maxValue - rows + 1) {
+            firstVisibleRow = maxValue - rows + 1;
         }
 
         int valueY = firstVisibleRow * stepY;
@@ -159,7 +159,7 @@ public class FreeFlowView extends AbstractFlowView {
             int firstVisible = Math.abs(touchView.getWidgetLeft(this) / step);
 
             // scroll forward column if moved "forward" a bit but not over one column
-            if (start.getX() > end.getX() && (start.getX() - end.getX()) < step+(step/3)) {
+            if (start.getX() > end.getX() && (start.getX() - end.getX()) < step + (step / 3)) {
                 firstVisible++;
             }
 
@@ -172,13 +172,13 @@ public class FreeFlowView extends AbstractFlowView {
             firstVisibleRow = 0;
             transitionToColumn();
         } else if (getElement().getOffsetTop() < -(endValue - touchView.getElement().getOffsetTop())) {
-            firstVisibleRow = maxValue;
+            firstVisibleRow = maxValue - rows + 1;
             transitionToColumn();
         } else {
             int firstVisible = Math.abs(touchView.getWidgetTop(this) / stepY);
 
             // scroll forward column if moved "forward" a bit but not over one column
-            if (start.getY() > end.getY() && (start.getY() - end.getY()) < stepY+(stepY/3)) {
+            if (start.getY() > end.getY() && (start.getY() - end.getY()) < stepY + (stepY / 3)) {
                 firstVisible++;
             }
 
