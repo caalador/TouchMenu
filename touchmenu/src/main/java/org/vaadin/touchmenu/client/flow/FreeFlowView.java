@@ -151,41 +151,41 @@ public class FreeFlowView extends AbstractFlowView {
 
         if (getElement().getOffsetLeft() > 0) {
             firstVisibleColumn = 0;
-            transitionToColumn();
         } else if (getElement().getOffsetLeft() < -(endValue - touchView.getOffsetWidth())) {
             firstVisibleColumn = maxValue;
-            transitionToColumn();
         } else {
             int firstVisible = Math.abs(touchView.getWidgetLeft(this) / step);
 
-            // scroll forward column if moved "forward" a bit but not over one column
-            if (start.getX() > end.getX() && (start.getX() - end.getX()) < step + (step / 3)) {
+            // scroll forward column if moved "forward" a bit but not over one column but more than a third
+            int sensitivity = step / 5;
+            if (start.getX() > end.getX() && (start.getX() - end.getX()) > sensitivity) {
+                firstVisible++;
+            } else if (start.getY() < end.getY() && (end.getY()-start.getY()) < sensitivity) {
                 firstVisible++;
             }
 
             firstVisibleColumn = firstVisible;
-
-            transitionToColumn();
         }
 
         if (getElement().getOffsetTop() > 0) {
             firstVisibleRow = 0;
-            transitionToColumn();
         } else if (getElement().getOffsetTop() < -(endValue - touchView.getElement().getOffsetTop())) {
             firstVisibleRow = maxValue - rows + 1;
-            transitionToColumn();
         } else {
             int firstVisible = Math.abs(touchView.getWidgetTop(this) / stepY);
 
-            // scroll forward column if moved "forward" a bit but not over one column
-            if (start.getY() > end.getY() && (start.getY() - end.getY()) < stepY + (stepY / 3)) {
+            // scroll forward column if moved "forward" a bit but not over one column but more than a third
+            int sensitivity = stepY / 5;
+            if (start.getY() > end.getY() && (start.getY() - end.getY()) > sensitivity) {
+                firstVisible++;
+            } else if (start.getY() < end.getY() && (end.getY()-start.getY()) < sensitivity) {
                 firstVisible++;
             }
 
             firstVisibleRow = firstVisible;
-
-            transitionToColumn();
         }
+
+        transitionToColumn();
     }
 
     @Override
