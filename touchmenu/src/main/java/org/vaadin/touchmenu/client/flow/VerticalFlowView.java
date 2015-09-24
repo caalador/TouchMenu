@@ -107,10 +107,8 @@ public class VerticalFlowView extends AbstractFlowView {
 
         if (getElement().getOffsetTop() > 0) {
             firstVisibleColumn = 0;
-            transitionToColumn();
         } else if (getElement().getOffsetTop() < -(endValue - touchView.getElement().getOffsetTop())) {
             firstVisibleColumn = maxValue;
-            transitionToColumn();
         } else {
             int firstVisible = Math.abs(touchView.getWidgetTop(this) / step);
 
@@ -120,9 +118,8 @@ public class VerticalFlowView extends AbstractFlowView {
             }
 
             firstVisibleColumn = firstVisible;
-
-            transitionToColumn();
         }
+        transitionToColumn();
     }
 
     @Override
