@@ -13,6 +13,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -31,7 +32,8 @@ public class DemoUI extends UI {
 
 
     private Layout buttonLayout;
-    private CheckBox animate, from, useArrows, enabled, scroll;
+    private CheckBox animate, from, useArrows, enabled;
+    private NativeSelect scroll;
     private TextField width, height, rows, columns, buttonWidth, buttonHeight, caption;
     private ComboBox background;
 
@@ -55,10 +57,10 @@ public class DemoUI extends UI {
 
         initMenuControlls();
 
-        HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
+        HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns, scroll);
         hl.setSpacing(true);
 
-        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows, scroll);
+        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows);
         hl2.setSpacing(true);
 
 
@@ -94,7 +96,6 @@ public class DemoUI extends UI {
 
         touchMenu.addComponent(getButton());
         touchMenu.addComponent(getButton());
-        touchMenu.setScrollDirection(ScrollDirection.FREE);
 
         // Build demo layout
         // Show it in the middle of the screen
@@ -127,8 +128,10 @@ public class DemoUI extends UI {
         useArrows = newCheckBox("Use arrows", touchMenu.isArrowNavigationEnabled());
         useArrows.setDescription("Show/hide the naviagtion arrows");
 
-        scroll = newCheckBox("Scroll Horizontally", true);
+        scroll = newSelect("Scroll Horizontally", ScrollDirection.HORIZONTAL, ScrollDirection.VERTICAL, ScrollDirection.FREE);
         scroll.setDescription("Set if scrolling should be horizontal (true) or vertical (false)");
+        scroll.select(touchMenu.getScrollDirection());
+        scroll.setNullSelectionAllowed(false);
 
         // Add listeners
         width.addValueChangeListener(new Property.ValueChangeListener() {
@@ -182,7 +185,7 @@ public class DemoUI extends UI {
         scroll.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setScrollDirection(scroll.getValue() ? ScrollDirection.HORIZONTAL : ScrollDirection.VERTICAL);
+                touchMenu.setScrollDirection((ScrollDirection)scroll.getValue());
             }
         });
     }
@@ -201,6 +204,17 @@ public class DemoUI extends UI {
         checkBox.setImmediate(true);
         return checkBox;
     }
+
+    private NativeSelect newSelect(String caption, Object... values) {
+        NativeSelect select = new NativeSelect(caption);
+
+        for(Object item:values) {
+            select.addItem(item);
+        }
+
+        return select;
+    }
+
 
     private Layout buttonInfoLayout() {
         final HorizontalLayout layout = new HorizontalLayout();
