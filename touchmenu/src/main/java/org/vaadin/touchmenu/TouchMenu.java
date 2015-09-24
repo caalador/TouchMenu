@@ -145,6 +145,10 @@ public class TouchMenu extends AbstractComponentContainer implements HasComponen
         getState().scrollDirection = scrollDirection;
     }
 
+    public ScrollDirection getScrollDirection() {
+        return getState().scrollDirection;
+    }
+
     @Override
     protected TouchMenuState getState() {
         return (TouchMenuState) super.getState();

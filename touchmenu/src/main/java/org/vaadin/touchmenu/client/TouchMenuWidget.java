@@ -243,6 +243,10 @@ public class TouchMenuWidget extends AbsolutePanel {
                 break;
             case FREE:
                 touchArea = new FreeFlowView(touchView);
+                touchView.getElement().getStyle().setLeft(0, Style.Unit.PX);
+                touchView.getElement().getStyle().setTop(0, Style.Unit.PX);
+                touchView.getElement().getStyle().setHeight(getOffsetHeight(), Style.Unit.PX);
+                touchView.getElement().getStyle().setWidth(getOffsetWidth(), Style.Unit.PX);
                 navigateLeft.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
                 navigateRight.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
                 break;

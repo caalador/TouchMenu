@@ -104,6 +104,7 @@ public class FreeFlowView extends AbstractFlowView {
         maxValue = 0;
 
         getElement().getStyle().setLeft(-(firstVisibleColumn * step), Style.Unit.PX);
+        getElement().getStyle().setTop(-(firstVisibleRow * stepY), Style.Unit.PX);
 
         // Position buttons into touchArea.
         // No extra positioning needed as we move touchArea instead of the buttons.
@@ -141,7 +142,6 @@ public class FreeFlowView extends AbstractFlowView {
         }
 
         endValue = left + step - columnMargin;
-//        maxValue -= sideSize - 1;
     }
 
 
