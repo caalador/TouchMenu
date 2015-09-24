@@ -101,7 +101,7 @@ public class TouchMenuConnector extends AbstractHasComponentsConnector implement
         for (final ComponentConnector connector : children) {
             widget.add((TouchMenuButtonWidget) connector.getWidget());
         }
-        getWidget().layoutWidgets();
+        widget.layoutWidgets();
     }
 
     @Override

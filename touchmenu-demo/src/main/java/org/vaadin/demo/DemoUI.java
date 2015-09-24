@@ -129,7 +129,7 @@ public class DemoUI extends UI {
         useArrows.setDescription("Show/hide the naviagtion arrows");
 
         scroll = newSelect("Scroll Horizontally", ScrollDirection.HORIZONTAL, ScrollDirection.VERTICAL, ScrollDirection.FREE);
-        scroll.setDescription("Set if scrolling should be horizontal (true) or vertical (false)");
+        scroll.setDescription("Select wanted scrolling mode");
         scroll.select(touchMenu.getScrollDirection());
         scroll.setNullSelectionAllowed(false);
 
