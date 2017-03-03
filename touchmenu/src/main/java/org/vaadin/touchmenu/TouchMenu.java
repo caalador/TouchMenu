@@ -1,9 +1,10 @@
 package org.vaadin.touchmenu;
 
-import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
+
+import com.google.common.collect.Lists;
 import org.vaadin.touchmenu.client.Direction;
 import org.vaadin.touchmenu.client.ScrollDirection;
 import org.vaadin.touchmenu.client.TouchMenuState;

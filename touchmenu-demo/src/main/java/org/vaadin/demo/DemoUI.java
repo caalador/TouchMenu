@@ -1,9 +1,16 @@
 package org.vaadin.demo;
 
+import javax.servlet.annotation.WebServlet;
+import java.util.stream.Stream;
+
+import org.vaadin.touchmenu.TouchMenu;
+import org.vaadin.touchmenu.TouchMenuButton;
+import org.vaadin.touchmenu.client.Direction;
+import org.vaadin.touchmenu.client.ScrollDirection;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.data.Property;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -17,23 +24,35 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import org.vaadin.touchmenu.TouchMenu;
-import org.vaadin.touchmenu.TouchMenuButton;
-import org.vaadin.touchmenu.client.Direction;
-import org.vaadin.touchmenu.client.ScrollDirection;
 
-import javax.servlet.annotation.WebServlet;
+import static org.vaadin.demo.DemoUI.Sizes.SIZE_100;
+import static org.vaadin.demo.DemoUI.Sizes.SIZE_150;
+import static org.vaadin.demo.DemoUI.Sizes.SIZE_50;
 
 @Theme("demo")
 @Title("TouchMenu Add-on Demo")
 @SuppressWarnings("serial")
 public class DemoUI extends UI {
 
+    public enum Sizes {
+        SIZE_50("50x50"), SIZE_100("100x100"), SIZE_150("150x150");
+
+        String name;
+
+        Sizes(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 
     private Layout buttonLayout;
     private CheckBox animate, from, useArrows, enabled, scroll;
-    private TextField width, height, rows, columns, buttonWidth, buttonHeight, caption;
-    private ComboBox background;
+    private TextField width, height, rows, columns, buttonWidth, buttonHeight,
+            caption;
+    private ComboBox<Sizes> background;
 
     private boolean updating = false;
     private int next = 0;
@@ -55,12 +74,13 @@ public class DemoUI extends UI {
 
         initMenuControlls();
 
-        HorizontalLayout hl = new HorizontalLayout(width, height, rows, columns);
+        HorizontalLayout hl = new HorizontalLayout(width, height, rows,
+                columns);
         hl.setSpacing(true);
 
-        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows, scroll);
+        HorizontalLayout hl2 = new HorizontalLayout(animate, from, useArrows,
+                scroll);
         hl2.setSpacing(true);
-
 
         // Add buttons to TouchMenu
         TouchMenuButton button = getButton("cake-48x48", "hundred", "position");
@@ -115,80 +135,55 @@ public class DemoUI extends UI {
 
         rows = newTextField("Rows", Integer.toString(touchMenu.getRows()));
 
-        columns = newTextField("Columns", Integer.toString(touchMenu.getColumns()));
+        columns = newTextField("Columns",
+                Integer.toString(touchMenu.getColumns()));
 
         animate = newCheckBox("Animate", touchMenu.isAnimate());
-        animate.setDescription("Set if end positioning should be animated or just snap");
+        animate.setDescription(
+                "Set if end positioning should be animated or just snap");
 
-        from = newCheckBox("From arrow direction", touchMenu.getDirection().equals(Direction.IN_FROM_SAME));
-        from.setDescription("Decide where the items should come in from when clicking an side arrow");
+        from = newCheckBox("From arrow direction",
+                touchMenu.getDirection().equals(Direction.IN_FROM_SAME));
+        from.setDescription(
+                "Decide where the items should come in from when clicking an side arrow");
 
-        useArrows = newCheckBox("Use arrows", touchMenu.isArrowNavigationEnabled());
+        useArrows = newCheckBox("Use arrows",
+                touchMenu.isArrowNavigationEnabled());
         useArrows.setDescription("Show/hide the naviagtion arrows");
 
         scroll = newCheckBox("Scroll Horizontally", true);
-        scroll.setDescription("Set if scrolling should be horizontal (true) or vertical (false)");
+        scroll.setDescription(
+                "Set if scrolling should be horizontal (true) or vertical (false)");
 
         // Add listeners
-        width.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setWidth(width.getValue());
-            }
-        });
+        width.addValueChangeListener(
+                event -> touchMenu.setWidth(width.getValue()));
 
-        height.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setHeight(height.getValue());
-            }
-        });
+        height.addValueChangeListener(
+                event -> touchMenu.setHeight(height.getValue()));
 
-        rows.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setRows(Integer.parseInt(rows.getValue()));
-            }
-        });
+        rows.addValueChangeListener(
+                event -> touchMenu.setRows(Integer.parseInt(rows.getValue())));
 
-        columns.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setColumns(Integer.parseInt(columns.getValue()));
-            }
-        });
+        columns.addValueChangeListener(event -> touchMenu
+                .setColumns(Integer.parseInt(columns.getValue())));
 
-        animate.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setAnimate(animate.getValue());
-            }
-        });
+        animate.addValueChangeListener(
+                event -> touchMenu.setAnimate(animate.getValue()));
 
-        from.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setDirection(from.getValue() ? Direction.IN_FROM_SAME : Direction.IN_FROM_OPPOSITE);
-            }
-        });
+        from.addValueChangeListener(
+                event -> touchMenu.setDirection(from.getValue()
+                        ? Direction.IN_FROM_SAME : Direction.IN_FROM_OPPOSITE));
 
-        useArrows.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setArrowNavigationEnabled(useArrows.getValue());
-            }
-        });
-        scroll.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                touchMenu.setScrollDirection(scroll.getValue() ? ScrollDirection.HORIZONTAL : ScrollDirection.VERTICAL);
-            }
-        });
+        useArrows.addValueChangeListener(event -> touchMenu
+                .setArrowNavigationEnabled(useArrows.getValue()));
+        scroll.addValueChangeListener(event -> touchMenu.setScrollDirection(
+                scroll.getValue() ? ScrollDirection.HORIZONTAL
+                        : ScrollDirection.VERTICAL));
     }
 
     private TextField newTextField(String caption, String value) {
         TextField textField = new TextField(caption);
-        textField.setImmediate(true);
         textField.setValue(value);
 
         return textField;
@@ -197,7 +192,6 @@ public class DemoUI extends UI {
     private CheckBox newCheckBox(String caption, boolean value) {
         CheckBox checkBox = new CheckBox(caption);
         checkBox.setValue(value);
-        checkBox.setImmediate(true);
         return checkBox;
     }
 
@@ -207,75 +201,59 @@ public class DemoUI extends UI {
         layout.setSpacing(true);
 
         buttonWidth = new TextField("Button Width");
-        buttonWidth.setImmediate(true);
-        buttonWidth.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!updating) {
-                    selection.setWidth(buttonWidth.getValue());
-                    selection.addStyleName("orange");
-                }
+        buttonWidth.addValueChangeListener(event -> {
+            if (!updating) {
+                selection.setWidth(buttonWidth.getValue());
+                selection.addStyleName("orange");
             }
         });
         buttonHeight = new TextField("Button Height");
-        buttonHeight.setImmediate(true);
-        buttonHeight.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!updating) {
-                    selection.setHeight(buttonHeight.getValue());
-                    selection.addStyleName("orange");
-                }
+        buttonHeight.addValueChangeListener(event -> {
+            if (!updating) {
+                selection.setHeight(buttonHeight.getValue());
+                selection.addStyleName("orange");
             }
         });
         caption = new TextField("Button caption");
         caption.setDescription("Change the button caption");
-        caption.setImmediate(true);
-        caption.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!updating) {
-                    selection.setCaption(caption.getValue());
-                }
+        caption.addValueChangeListener(event -> {
+            if (!updating) {
+                selection.setCaption(caption.getValue());
             }
         });
         enabled = newCheckBox("Enabled", false);
-        enabled.setDescription("Enable or disable selected button. NOTE! if you click another button this button will stay disabled as you cant 'select' it again.");
-        enabled.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (!updating) {
-                    selection.setEnabled(enabled.getValue());
-                }
+        enabled.setDescription(
+                "Enable or disable selected button. NOTE! if you click another button this button will stay disabled as you cant 'select' it again.");
+        enabled.addValueChangeListener(event -> {
+            if (!updating) {
+                selection.setEnabled(enabled.getValue());
             }
         });
-        background = new ComboBox("Background");
-        background.setNullSelectionAllowed(false);
-        background.addItem("50x50");
-        background.addItem("100x100");
-        background.addItem("150x150");
+        background = new ComboBox<>("Background");
+        background.setItems(Stream.of(SIZE_50, SIZE_100, SIZE_150));
+        background.setItemCaptionGenerator(Sizes::getName);
 
-        background.setDescription("Background is just a css style name that has a predefined image of given size.");
+        background.setDescription(
+                "Background is just a css style name that has a predefined image of given size.");
 
-        background.select("50x50");
+        background.setSelectedItem(SIZE_50);
 
-        background.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (updating) {
-                    return;
-                }
-
-                if (background.getValue().equals("50x50")) {
-                    selection.removeStyleName("hundred");
-                    selection.removeStyleName("hundred-fidy");
-                } else if (background.getValue().equals("100x100")) {
-                    selection.removeStyleName("hundred-fidy");
-                    selection.addStyleName("hundred");
-                } else if (background.getValue().equals("150x150")) {
-                    selection.removeStyleName("hundred");
-                    selection.addStyleName("hundred-fidy");
-                }
+        background.addValueChangeListener(event -> {
+            if (updating) {
+                return;
+            }
+            switch (background.getValue()) {
+            case SIZE_50:
+                selection.removeStyleName("hundred");
+                selection.removeStyleName("hundred-fidy");
+                break;
+            case SIZE_100:
+                selection.removeStyleName("hundred-fidy");
+                selection.addStyleName("hundred");
+                break;
+            case SIZE_150:
+                selection.removeStyleName("hundred");
+                selection.addStyleName("hundred-fidy");
             }
         });
 
@@ -287,7 +265,8 @@ public class DemoUI extends UI {
                 layout.setVisible(false);
             }
         });
-        layout.addComponents(caption, buttonWidth, buttonHeight, background, enabled, removeButton);
+        layout.addComponents(caption, buttonWidth, buttonHeight, background,
+                enabled, removeButton);
         layout.setComponentAlignment(enabled, Alignment.BOTTOM_CENTER);
         layout.setComponentAlignment(removeButton, Alignment.BOTTOM_CENTER);
         layout.setVisible(false);
@@ -304,13 +283,16 @@ public class DemoUI extends UI {
     }
 
     private TouchMenuButton getButton(String icon) {
-        TouchMenuButton button = new TouchMenuButton(captions[next % captions.length], new ThemeResource("images/" + icon + ".png"));
+        TouchMenuButton button = new TouchMenuButton(
+                captions[next % captions.length],
+                new ThemeResource("images/" + icon + ".png"));
         next++;
         return button;
     }
 
     private TouchMenuButton getButton() {
-        TouchMenuButton button = new TouchMenuButton(captions[next % captions.length]);
+        TouchMenuButton button = new TouchMenuButton(
+                captions[next % captions.length]);
         next++;
         return button;
     }
@@ -320,18 +302,20 @@ public class DemoUI extends UI {
         buttonLayout.setVisible(true);
 
         updating = true;
-        buttonHeight.setValue(button.getHeight() + "" + button.getHeightUnits());
+        buttonHeight
+                .setValue(button.getHeight() + "" + button.getHeightUnits());
         buttonWidth.setValue(button.getWidth() + "" + button.getWidthUnits());
         caption.setValue(button.getCaption());
         enabled.setValue(button.isEnabled());
-        background.setValue(button.getStyleName().contains("hundred-fidy") ? "150x150" : button.getStyleName().contains("hundred") ? "100x100" : "50x50");
+        background.setValue(
+                button.getStyleName().contains("hundred-fidy") ? SIZE_150
+                        : button.getStyleName().contains("hundred") ? SIZE_100
+                                : SIZE_50);
         updating = false;
     }
 
-
-    String[] captions = new String[]{
-            "Cake", "Capsule button", "Coffee", "Sugar", "Honey", "Rain", "Movies"
-    };
+    String[] captions = new String[] { "Cake", "Capsule button", "Coffee",
+            "Sugar", "Honey", "Rain", "Movies" };
 
     TouchMenu.TouchMenuListener touchMenuListener = new TouchMenu.TouchMenuListener() {
         @Override

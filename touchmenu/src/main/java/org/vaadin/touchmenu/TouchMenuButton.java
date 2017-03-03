@@ -1,9 +1,10 @@
 package org.vaadin.touchmenu;
 
 
-import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
+
+import com.google.common.collect.Lists;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonRpc;
 import org.vaadin.touchmenu.client.button.TouchMenuButtonState;
 
