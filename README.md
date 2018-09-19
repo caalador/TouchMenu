@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/touchmenu)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/touchmenu.svg)](https://vaadin.com/directory/component/touchmenu)
+
 # TouchMenu Add-on for Vaadin 7
 
 TouchMenu is a rebuild of the Vaadin 6 UI component add-on now for Vaadin 7.
